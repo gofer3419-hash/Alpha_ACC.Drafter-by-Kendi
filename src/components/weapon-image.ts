@@ -12,14 +12,25 @@ export class WeaponImage extends LitElement {
         justify-content: center;
         flex-direction: column;
         width: 150px;
-        filter: hue-rotate(345deg) brightness(200%) saturate(10000%); 
-      
       }
 
       img {
-        // border-radius: var(--lumo-border-radius-m);
         width: 100%;
         max-height: 56px;
+      }
+
+      /* The icon shape filled with the button burgundy */
+      .icon {
+        width: 100%;
+        aspect-ratio: 236 / 88;
+        max-height: 56px;
+        background-color: var(--lumo-primary-color);
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+        -webkit-mask-position: center;
+        mask-position: center;
+        -webkit-mask-size: contain;
+        mask-size: contain;
       }
 
 
@@ -54,15 +65,21 @@ export class WeaponImage extends LitElement {
               alt=${'Image could not be found'}
               title=${this._weapon?.weaponName}
             /> `
-          : html`<img
-              src=${this.generateSrc()}
-              alt=${this._weapon?.weaponName}
-              title=${this._weapon?.weaponName}
-              loading="eager"
-              @error=${() => {
-                this.showFallback = true;
-              }}
-            />`}
+          : html`<div
+                class="icon"
+                role="img"
+                aria-label=${this._weapon?.weaponName ?? ''}
+                title=${this._weapon?.weaponName ?? ''}
+                style="-webkit-mask-image: url('${this.generateSrc()}'); mask-image: url('${this.generateSrc()}')"
+              ></div>
+              <img
+                hidden
+                src=${this.generateSrc()}
+                alt=""
+                @error=${() => {
+                  this.showFallback = true;
+                }}
+              />`}
       `;
     }
     return html``;
