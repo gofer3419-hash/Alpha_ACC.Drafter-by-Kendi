@@ -16,4 +16,5 @@ Standalone API krok po kroku:
     - npm install
     - npm run build
     - npm start ( tu sie nic nie zakończy, to działająca api, żeby zakończyć działanie strony - CTRL + C )
+      
 - kolejne uruchomienia wymagają uruchomienia pliku start.bat ( żeby zakończyć CTRL + C )
