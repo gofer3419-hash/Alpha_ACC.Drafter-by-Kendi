@@ -5,16 +5,24 @@ Wczesna Alfa, projekt draftera skonstruowany przy pomocy AI na potrzeby klanowe
 # Instalacja
 Standalone API krok po kroku:
 
-1. Wypakować Repo do docelowego folderu (D:\accdrafter\"pliki api")
+1. Wypakować Repo do docelowego folderu (np. D:\accdrafter)
 
 2. Instalacja Node.js https://nodejs.org/en/download
  - najlepiej LTS, Windows Installer (.msi)
 
-3. Uruchomienie CMD
-- wejdź do folderu: cd "D:\accdrafter\"
-- uruchom 3 komendy po kolei czekając aż się zakończą
-    - npm install
-    - npm run build
-    - npm start ( tu sie nic nie zakończy, to działająca api, żeby zakończyć działanie strony - CTRL + C )
-      
-- kolejne uruchomienia wymagają uruchomienia pliku start_draft.bat ( żeby zakończyć CTRL + C )
+3. Uruchomienie
+- kliknij dwa razy plik start_draft.bat w folderze draftera
+- przy pierwszym uruchomieniu sam zainstaluje potrzebne pliki (npm install), to potrwa kilka minut
+- strona otworzy się w przeglądarce: http://localhost:8080
+- okno musi być otwarte, dopóki korzystasz ze strony; żeby zakończyć, zamknij okno albo wciśnij CTRL + C
+
+Ręcznie z CMD (zamiast start_draft.bat):
+- wejdź do folderu: cd /d "D:\accdrafter"
+- npm install (tylko za pierwszym razem)
+- npm start (tu się nic nie zakończy, to działająca strona; żeby zakończyć - CTRL + C)
+
+# Wersja na hosting / XAMPP
+- npm run build
+- zawartość folderu dist wrzucić na hosting albo do htdocs w XAMPP
+
+Szczegóły projektu: DRAFTER.md
