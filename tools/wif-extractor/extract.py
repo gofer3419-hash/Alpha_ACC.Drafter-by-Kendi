@@ -370,7 +370,7 @@ def build_unit(desc, unit, uid, ctx):
         movement = "land"
 
     weapon_ref = next((short(r) for r in refs if "/GFX/Weapon/WeaponDescriptor" in r), None)
-    weapons = build_weapons(ctx["weapons"].get(weapon_ref), ctx["weapons"], ctx["names"])
+    weapons = build_weapons(ctx["weapons"].get(weapon_ref), ctx["weapons"], ctx["weapon_names"])
 
     country = typ.get("MotherCountry") or ""
     coalition = "ECoalition/Allied" if country in NATO_COUNTRIES else "ECoalition/Axis"
@@ -608,6 +608,10 @@ def main():
 
     ctx = {
         "names": load_strings(args.strings),
+        # Weapon names: game dictionaries (.dic) give short names without the
+        # calibre ("2A64"); the descriptor-based names ("Howz Canon 2A64 152mm")
+        # are a better reference, so only mod CSV strings are used for weapons.
+        "weapon_names": load_strings([p for p in args.strings or [] if not p.lower().endswith(".dic")]),
         "weapons": weapons_db,
         "unit_divisions": unit_divisions,
         "cost_matrices": cost_matrices,
