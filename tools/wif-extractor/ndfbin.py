@@ -200,8 +200,8 @@ class Reader:
             return "GUID:{" + b.hex() + "}"
         if t == 0x1D:  # localisation token
             (v,) = self.take("<Q"); return decode_token(v)
-        if t == 0x1F:
-            b = self.raw[self.pos:self.pos + 16]; self.pos += 16; return b.hex()
+        if t == 0x1F:  # 2D int vector (e.g. atlas Size)
+            return self.take("<II")
         if t == 0x21:  # 2D float vector
             return self.take("<ff")
         if t == 0x22:  # pair
