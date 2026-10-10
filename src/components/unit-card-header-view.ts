@@ -8,7 +8,6 @@ import '@vaadin/button';
 import './division-flag';
 import {Unit} from '../types/unit';
 import {getIconsWithFallback} from '../utils/get-icons-with-fallback';
-import {router} from '../services/router';
 import "./unit-traits";
 import {isSpecialtyTrait} from '../utils/is-specialty-trait';
 
@@ -124,15 +123,6 @@ export class UnitCardHeaderView extends LitElement {
           </div>
 
           <div style="display: flex; gap: var(--lumo-space-xs);">
-            <a
-              href=${router.urlForPath('/damage-calculator/:unitId', {
-                unitId: this.unit.descriptorName,
-              })}
-              title="Damage Calculator"
-            >
-              <vaadin-icon icon="waryes:calculator"></vaadin-icon>
-            </a>
-
             ${this.hideExpertButton
               ? html``
               : html` <vaadin-button
