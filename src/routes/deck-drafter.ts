@@ -3,7 +3,7 @@ import {css, html, LitElement, TemplateResult} from 'lit';
 import {customElement, state} from 'lit/decorators.js';
 import '@vaadin/button';
 // @ts-ignore
-import WaryesImage from '../../images/waryes-transparent.png';
+import AccLogo from '../../images/acc-logo.webp';
 import {DeckDraftFactory} from '../classes/deck-drafter/DeckDraftFactory';
 import {DraftSide} from '../classes/deck-drafter/DeckDraftClientEngine';
 import {BundleManagerService, Dlc} from '../services/bundle-manager';
@@ -473,7 +473,7 @@ export class DeckDrafterRoute
 
       <div class="card center">
         <div class="header">
-          <img src=${WaryesImage} alt="WarYes Logo" />
+          <img src=${AccLogo} alt="ACC.DRAFTER" />
           <h2 style="margin: 0">${DATASETS[this.draftDataset].title}</h2>
         </div>
         <div>
