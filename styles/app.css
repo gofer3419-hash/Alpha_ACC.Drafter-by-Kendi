@@ -37,10 +37,12 @@ html[theme~='dark'] {
   --lumo-tint-5pct: hsla(0, 0%, 92%, 0.05);
 
   /* Neon burgundy */
-  --acc-burgundy: hsl(345, 88%, 33%);
+  --acc-burgundy: hsl(345, 85%, 39%);
+  /* Lighter burgundy for thin shapes (weapon icons) on the dark background */
+  --acc-burgundy-light: hsl(346, 82%, 46%);
   --acc-burgundy-glow: hsla(345, 100%, 45%, 0.6);
   --lumo-primary-color: var(--acc-burgundy);
-  --lumo-primary-text-color: hsl(348, 100%, 66%);
+  --lumo-primary-text-color: hsl(347, 95%, 62%);
   --lumo-primary-contrast-color: #fff;
   --lumo-primary-color-50pct: hsla(346, 92%, 45%, 0.6);
   --lumo-primary-color-10pct: hsla(346, 92%, 45%, 0.16);

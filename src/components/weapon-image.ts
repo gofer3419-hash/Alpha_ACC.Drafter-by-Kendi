@@ -24,7 +24,7 @@ export class WeaponImage extends LitElement {
         width: 100%;
         aspect-ratio: 236 / 88;
         max-height: 56px;
-        background-color: var(--lumo-primary-color);
+        background-color: var(--acc-burgundy-light);
         -webkit-mask-repeat: no-repeat;
         mask-repeat: no-repeat;
         -webkit-mask-position: center;
