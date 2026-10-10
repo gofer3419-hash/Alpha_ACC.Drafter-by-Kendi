@@ -12,17 +12,17 @@ Standalone API krok po kroku:
 
 3. Uruchomienie
 - kliknij dwa razy plik start_draft.bat w folderze draftera
-- przy pierwszym uruchomieniu sam zainstaluje potrzebne pliki (npm install), to potrwa kilka minut
-- strona otworzy się w przeglądarce: http://localhost:8080
-- okno musi być otwarte, dopóki korzystasz ze strony; żeby zakończyć, zamknij okno albo wciśnij CTRL + C
+    - przy pierwszym uruchomieniu sam zainstaluje potrzebne pliki (npm install), to potrwa kilka minut
+    - strona otworzy się w przeglądarce: http://localhost:8080
+    - okno musi być otwarte, dopóki korzystasz ze strony ( żeby zakończyć, zamknij okno albo CTRL + C )
 
-Ręcznie z CMD (zamiast start_draft.bat):
-- wejdź do folderu: cd /d "D:\accdrafter"
-- npm install (tylko za pierwszym razem)
-- npm start (tu się nic nie zakończy, to działająca strona; żeby zakończyć - CTRL + C)
+- albo ręcznie z CMD:
+    - wejdź do folderu: cd /d "D:\accdrafter"
+    - npm install ( tylko za pierwszym razem )
+    - npm start ( tu sie nic nie zakończy, to działająca api, żeby zakończyć działanie strony - CTRL + C )
 
 # Wersja na hosting / XAMPP
 - npm run build
-- zawartość folderu dist wrzucić na hosting albo do htdocs w XAMPP
+    - zawartość folderu dist wrzucić na hosting albo do htdocs w XAMPP
 
 Szczegóły projektu: DRAFTER.md
