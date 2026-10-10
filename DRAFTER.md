@@ -6,7 +6,7 @@ Losowy draft decku dla moda WARNO **A World in Flames**, zbudowany na bazie
 Strona główna ma trzy przyciski:
 
 - **Losowanie drużyn**: do 10 graczy, maksymalnie 5 na stronę.
-- **ACC.DRAFTER**: draft WarYes na dywizjach moda WiF; najpierw wybór
+- **WiF Deck Drafter**: draft WarYes na dywizjach moda WiF; najpierw wybór
   strony (NATO albo PACT).
 - **VANILLA Deck Drafter**: draft na dywizjach gry bazowej; po wyborze strony
   zaznaczasz posiadane DLC i losowane są tylko dywizje z gry bazowej i tych DLC.

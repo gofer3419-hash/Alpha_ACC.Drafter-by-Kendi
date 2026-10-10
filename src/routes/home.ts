@@ -80,7 +80,7 @@ export class HomeRoute extends LitElement {
     return html`
       <nav>
         <a href="/teams">Losowanie drużyn</a>
-        <a href="/drafter/wif">ACC.DRAFTER</a>
+        <a href="/drafter/wif">WiF Deck Drafter</a>
         <a href="/drafter/vanilla">VANILLA Deck Drafter</a>
         <button
           class="sound"

@@ -18,7 +18,7 @@ export interface DatasetConfig {
 
 export const DATASETS: Record<Dataset, DatasetConfig> = {
   wif: {
-    title: 'ACC.DRAFTER',
+    title: 'WiF Deck Drafter',
     dataUrl: '/data/wif.json',
     draftStorageKey: 'deckDraftState_wif',
     // Decks made in game with WiF loaded carry the mod's Steam Workshop id
