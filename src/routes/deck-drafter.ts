@@ -427,6 +427,11 @@ export class DeckDrafterRoute
             >${side === 'NATO' ? 'NATO' : 'PAKT'}</span
           >. Zaznacz posiadane DLC. Dywizje z gry bazowej są zawsze w puli.
         </p>
+        <p class="hint">
+          <span class="gold-mark">*</span> Wskazówka: edycja Gold (WARNO Gold
+          Edition) zawiera Expansion Pass, czyli DLC: NORTHAG, SOUTHAG,
+          Nemesis #1 - Air Assault i Nemesis #2 - Plateau d'Albion.
+        </p>
         <div class="dlc-list">
           ${this.dlcs.map((dlc) => {
             const count = this.countForSide(dlc.divisions, side);
@@ -465,11 +470,6 @@ export class DeckDrafterRoute
             >Wyczyść</vaadin-button
           >
         </div>
-        <p class="hint">
-          <span class="gold-mark">*</span> Wskazówka: edycja Gold (WARNO Gold
-          Edition) zawiera Expansion Pass, czyli DLC: NORTHAG, SOUTHAG,
-          Nemesis #1 - Air Assault i Nemesis #2 - Plateau d'Albion.
-        </p>
         <p>Dywizji w puli: ${available}</p>
       </div>
       <div class="button-container">
