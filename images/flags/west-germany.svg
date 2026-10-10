@@ -1,0 +1,32 @@
+<svg
+   width="80"
+   height="48"
+   viewBox="0 0 0.4 0.24"
+     xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   >
+  <rect
+     id="black_stripe"
+     width="0.40002173"
+     height="0.24001303"
+     y="0"
+     x="0"
+     fill="#000000"
+     style="stroke-width:0.0800044" />
+  <rect
+     id="red_stripe"
+     width="0.40002173"
+     height="0.16000868"
+     y="0.080004342"
+     x="0"
+     fill="#dd0000"
+     style="stroke-width:0.0800044" />
+  <rect
+     id="gold_stripe"
+     width="0.40002173"
+     height="0.080004342"
+     y="0.16000868"
+     x="0"
+     fill="#ffce00"
+     style="stroke-width:0.0800044" />
+</svg>

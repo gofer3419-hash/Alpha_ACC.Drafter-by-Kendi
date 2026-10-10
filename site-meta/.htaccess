@@ -1,0 +1,2 @@
+# Apache (e.g. XAMPP): serve index.html for client-side routes like /drafter/wif
+FallbackResource /index.html

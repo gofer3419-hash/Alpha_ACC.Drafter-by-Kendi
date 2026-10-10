@@ -1,0 +1,10 @@
+/node_modules/
+/lib/
+/test/
+custom-elements.json
+/out-tsc/
+# top level source
+dist
+.parcel-cache
+build
+.env

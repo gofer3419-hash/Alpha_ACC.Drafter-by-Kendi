@@ -1,0 +1,125 @@
+[
+  {
+    "id": "early-access",
+    "name": "Early Access Pack",
+    "divisions": [
+      "Descriptor_Deck_Division_NATO_Garnison_Berlin_multi",
+      "Descriptor_Deck_Division_US_24th_Inf_multi",
+      "Descriptor_Deck_Division_US_35th_Inf_multi",
+      "Descriptor_Deck_Division_SOV_6IndMSBrig_multi",
+      "Descriptor_Deck_Division_SOV_27_Gds_Rifle_multi",
+      "Descriptor_Deck_Division_WP_Unternehmen_Zentrum_multi",
+      "Descriptor_Deck_Division_RDA_Rugen_Gruppierung"
+    ]
+  },
+  {
+    "id": "northag",
+    "name": "NORTHAG",
+    "divisions": [
+      "Descriptor_Deck_Division_BEL_16e_Mecanisee_multi",
+      "Descriptor_Deck_Division_NL_4e_Divisie_multi",
+      "Descriptor_Deck_Division_UK_4th_Armoured_multi",
+      "Descriptor_Deck_Division_UK_5th_Airborne_Brigade_multi",
+      "Descriptor_Deck_Division_US_9th_Mot_multi",
+      "Descriptor_Deck_Division_SOV_25_Tank_multi",
+      "Descriptor_Deck_Division_RDA_9_Panzer_multi",
+      "Descriptor_Deck_Division_POL_4_Zmechanizowana_multi",
+      "Descriptor_Deck_Division_POL_20_Pancerna_multi",
+      "Descriptor_Deck_Division_POL_Korpus_Desantowy_multi"
+    ]
+  },
+  {
+    "id": "southag",
+    "name": "SOUTHAG",
+    "divisions": [
+      "Descriptor_Deck_Division_FR_6e_Blindee_Legere_multi",
+      "Descriptor_Deck_Division_FR_Division_du_Rhin_multi",
+      "Descriptor_Deck_Division_RFA_1_Luftlande_multi",
+      "Descriptor_Deck_Division_CAN_1st_Canadian_multi",
+      "Descriptor_Deck_Division_ESP_Division_Brunete_multi",
+      "Descriptor_Deck_Division_SOV_17_Gds_Tank_multi",
+      "Descriptor_Deck_Division_SOV_31_Tank_multi",
+      "Descriptor_Deck_Division_TCH_1_Tank_multi",
+      "Descriptor_Deck_Division_TCH_303_Tank_multi",
+      "Descriptor_Deck_Division_TCH_19_MSD_multi"
+    ]
+  },
+  {
+    "id": "landjut",
+    "name": "LANDJUT",
+    "divisions": [
+      "Descriptor_Deck_Division_US_2nd_Marine_multi",
+      "Descriptor_Deck_Division_DK_Jyske_multi",
+      "Descriptor_Deck_Division_DK_Ostre_Landkommando_multi",
+      "Descriptor_Deck_Division_RFA_6_PzGrenadier_multi",
+      "Descriptor_Deck_Division_SOV_336_Naval_Brigade_multi",
+      "Descriptor_Deck_Division_SOV_94_Gds_Rifle_multi",
+      "Descriptor_Deck_Division_RDA_20_MSD_multi",
+      "Descriptor_Deck_Division_POL_15_Zmechanizowana_multi"
+    ]
+  },
+  {
+    "id": "nemesis-1",
+    "name": "Nemesis #1 - Air Assault",
+    "divisions": [
+      "Descriptor_Deck_Division_US_101st_Airmobile_multi",
+      "Descriptor_Deck_Division_SOV_56_AirAslt_Brig_multi"
+    ]
+  },
+  {
+    "id": "nemesis-2",
+    "name": "Nemesis #2 - Plateau d'Albion",
+    "divisions": [
+      "Descriptor_Deck_Division_FR_152e_Infanterie_multi",
+      "Descriptor_Deck_Division_SOV_76_VDV_multi"
+    ]
+  },
+  {
+    "id": "nemesis-3",
+    "name": "Nemesis #3 - Homefront",
+    "divisions": [
+      "Descriptor_Deck_Division_US_6th_Light_multi",
+      "Descriptor_Deck_Division_SOV_157_Rifle_multi"
+    ]
+  },
+  {
+    "id": "nemesis-4",
+    "name": "Nemesis #4 - Capital Defence",
+    "divisions": [
+      "Descriptor_Deck_Division_UK_London_HDR_multi",
+      "Descriptor_Deck_Division_SOV_2_Gds_Rifle_multi"
+    ]
+  },
+  {
+    "id": "nemesis-5",
+    "name": "Nemesis #5 - Southern Flank",
+    "divisions": [
+      "Descriptor_Deck_Division_ESP_Division_Guzman_multi",
+      "Descriptor_Deck_Division_TCH_2_MSD_multi"
+    ]
+  },
+  {
+    "id": "nemesis-6",
+    "name": "Nemesis #6 - The Magdeburg Counterstrike",
+    "divisions": [
+      "Descriptor_Deck_Division_US_1st_Cavalry_multi",
+      "Descriptor_Deck_Division_SOV_1_Gds_Rifle_multi"
+    ]
+  },
+  {
+    "id": "nemesis-7",
+    "name": "Nemesis #7 - State of Emergency",
+    "divisions": [
+      "Descriptor_Deck_Division_FR_ZdD_Paris_multi",
+      "Descriptor_Deck_Division_SOV_DON_100_multi"
+    ]
+  },
+  {
+    "id": "nemesis-8",
+    "name": "Nemesis #8 - School's Out!",
+    "divisions": [
+      "Descriptor_Deck_Division_RFA_VTK_42_multi",
+      "Descriptor_Deck_Division_SOV_71_Tank_multi"
+    ]
+  }
+]
