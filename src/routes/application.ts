@@ -30,9 +30,6 @@ export class Application extends LitElement {
           hsla(0, 0%, 8%, 0.92),
           hsla(0, 0%, 12%, 0.88)
         );
-        border-top: 1px solid hsla(346, 92%, 45%, 0.45);
-        border-bottom: 2px solid var(--acc-burgundy);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
       }
 
       header a {
