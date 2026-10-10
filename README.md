@@ -15,6 +15,6 @@ Standalone API krok po kroku:
 - uruchom 3 komendy po kolei czekając aż się zakończą
     - npm install
     - npm run build
-    - npm start ( tu sie nic nie zakończy, to działająca api, żeby zakończyć działanie strony - CTRL + C )
+    - npm start_draft.bat ( tu sie nic nie zakończy, to działająca api, żeby zakończyć działanie strony - CTRL + C )
       
 - kolejne uruchomienia wymagają uruchomienia pliku start.bat ( żeby zakończyć CTRL + C )
