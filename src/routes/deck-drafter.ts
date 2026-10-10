@@ -76,7 +76,7 @@ export class DeckDrafterRoute
         overflow: hidden;
         background-image: linear-gradient(
           to top,
-          hsla(75, 10%, 6%, 0.92),
+          hsla(0, 0%, 6%, 0.92),
           hsla(350, 60%, 10%, 0.85),
           hsla(348, 75%, 18%, 0.75),
           hsla(346, 85%, 28%, 0.6),

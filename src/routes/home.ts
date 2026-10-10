@@ -36,16 +36,8 @@ export class HomeRoute extends LitElement {
         font-weight: 600;
       }
 
-      a {
-        box-shadow: 0 0 12px var(--acc-burgundy-glow),
-          inset 0 0 0 1px hsla(345, 100%, 70%, 0.35);
-        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.6);
-      }
-
       a:hover {
         filter: brightness(1.2);
-        box-shadow: 0 0 20px var(--acc-burgundy-glow),
-          inset 0 0 0 1px hsla(345, 100%, 75%, 0.5);
       }
 
       .sound {

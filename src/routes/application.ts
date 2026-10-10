@@ -27,8 +27,8 @@ export class Application extends LitElement {
         padding: 0 var(--lumo-space-m);
         background: linear-gradient(
           to bottom,
-          hsla(75, 10%, 8%, 0.92),
-          hsla(75, 10%, 12%, 0.88)
+          hsla(0, 0%, 8%, 0.92),
+          hsla(0, 0%, 12%, 0.88)
         );
         border-top: 1px solid hsla(346, 92%, 45%, 0.45);
         border-bottom: 2px solid var(--acc-burgundy);

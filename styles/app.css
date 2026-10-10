@@ -20,7 +20,7 @@ html {
 body {
   height: 100vh;
   margin: 0;
-  background-color: #1f211b;
+  background-color: #232323;
   background-image: url(../images/camo.svg);
   background-size: cover;
   background-position: center;
@@ -32,9 +32,9 @@ main {
 }
 
 html[theme~='dark'] {
-  /* Dark olive panels over the camouflage background */
-  --lumo-base-color: hsl(75, 9%, 10%);
-  --lumo-tint-5pct: hsla(40, 30%, 92%, 0.05);
+  /* Dark grey panels over the camouflage background */
+  --lumo-base-color: hsl(0, 0%, 11%);
+  --lumo-tint-5pct: hsla(0, 0%, 92%, 0.05);
 
   /* Neon burgundy */
   --acc-burgundy: hsl(345, 88%, 33%);
