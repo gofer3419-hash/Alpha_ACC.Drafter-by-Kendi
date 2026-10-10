@@ -27,9 +27,11 @@ function convert(file) {
     console.error(`skip ${file}: format ${format}`);
     return;
   }
-  // First mip: offset/size table follows the format string at 56.
-  const offset = b.readUInt32LE(56);
-  const size = b.readUInt32LE(60);
+  // Mip table at 56: all offsets, then all sizes; smallest mip first, so the
+  // full-size image is the last entry.
+  const mips = b.readUInt16LE(24);
+  const offset = b.readUInt32LE(56 + 4 * (mips - 1));
+  const size = b.readUInt32LE(56 + 4 * mips + 4 * (mips - 1));
   let pixels = b.subarray(offset, offset + size);
   if (pixels.toString('latin1', 0, 4) === 'ZSTD') {
     pixels = zlib.zstdDecompressSync(pixels.subarray(8));
