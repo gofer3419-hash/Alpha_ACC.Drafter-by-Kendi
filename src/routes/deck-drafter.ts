@@ -42,6 +42,9 @@ function saveOwnedDlc(ids: string[]) {
   }
 }
 
+/** DLC included in WARNO Gold Edition (via the Expansion Pass). */
+const GOLD_EDITION_DLC = ['northag', 'southag', 'nemesis-1', 'nemesis-2'];
+
 @customElement('deck-drafter-route')
 export class DeckDrafterRoute
   extends LitElement
@@ -49,6 +52,18 @@ export class DeckDrafterRoute
 {
   static get styles() {
     return css`
+      .hint {
+        font-size: var(--lumo-font-size-s);
+        color: var(--lumo-secondary-text-color);
+        margin: var(--lumo-space-s) 0;
+      }
+
+      .gold-mark {
+        color: var(--lumo-secondary-color);
+        font-weight: 700;
+        margin-left: 2px;
+      }
+
       :host {
         display: flex;
         align-items: flex-start;
@@ -426,7 +441,11 @@ export class DeckDrafterRoute
                       (e.target as HTMLInputElement).checked
                     )}
                 />
-                <span>${dlc.name}</span>
+                <span
+                  >${dlc.name}${GOLD_EDITION_DLC.includes(dlc.id)
+                    ? html`<span class="gold-mark">*</span>`
+                    : ''}</span
+                >
                 <span class="count"
                   >(${divisionsLabel(count)})</span
                 >
@@ -446,6 +465,11 @@ export class DeckDrafterRoute
             >Wyczyść</vaadin-button
           >
         </div>
+        <p class="hint">
+          <span class="gold-mark">*</span> Wskazówka: edycja Gold (WARNO Gold
+          Edition) zawiera Expansion Pass, czyli DLC: NORTHAG, SOUTHAG,
+          Nemesis #1 - Air Assault i Nemesis #2 - Plateau d'Albion.
+        </p>
         <p>Dywizji w puli: ${available}</p>
       </div>
       <div class="button-container">
