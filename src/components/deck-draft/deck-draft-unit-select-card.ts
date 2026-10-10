@@ -2,7 +2,7 @@ import {customElement, state} from 'lit/decorators.js';
 import {html, css, TemplateResult} from 'lit';
 import {ArmouryWithTransportCard} from '../deck/armoury-with-transport-card';
 import {Unit} from '../../types/unit';
-import {getVeterancyName} from '../../utils/get-icon-for-veterancy';
+import {renderVeterancyBadge} from '../../utils/get-icon-for-veterancy';
 import {getIconForTrait} from '../../utils/get-icon-for-trait';
 import {Pack, UnitCategory} from '../../types/deck-builder';
 import {DialogOpenedChangedEvent} from '@vaadin/dialog';
@@ -35,9 +35,14 @@ export class DeckDraftUnitSelectCard extends ArmouryWithTransportCard {
       }
 
       .veterancy {
+        align-self: flex-start;
         text-transform: uppercase;
+        letter-spacing: 0.08em;
         font-size: var(--lumo-font-size-l);
-        color: var(--lumo-contrast-70pct);
+        font-weight: 700;
+        padding: 2px var(--lumo-space-s);
+        margin-bottom: var(--lumo-space-xs);
+        background-color: rgba(0, 0, 0, 0.45);
       }
 
       .name {
@@ -232,7 +237,7 @@ export class DeckDraftUnitSelectCard extends ArmouryWithTransportCard {
         return html`
           ${this.transport ? this.renderTransportModal(this.transport) : ''}
           <div class="veterancy"
-            >${getVeterancyName(this.activeVeterancy)}</div>
+            >${renderVeterancyBadge(this.activeVeterancy)}</div>
           <div class="bar">
             <div class="name">${unit.name}</div><div class="availability"
               >x${veterancyQuantities[this.activeVeterancy]}</div>

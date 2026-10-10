@@ -86,10 +86,15 @@ export class CompactArmouryCard extends ArmouryWithTransportCard {
         position: absolute;
         top: 0.5;
         right: 0;
-        background-color: hsla(240, 7%, 11%, 0.8);
+        background-color: rgba(0, 0, 0, 0.75);
         border-radius: var(--lumo-border-radius-s);
-        padding-left: 2px;
-        padding-right: 2px;
+        padding: 1px 3px;
+        display: flex;
+      }
+
+      .veterancy vaadin-icon {
+        width: 20px;
+        height: 20px;
       }
     `,
   ];
