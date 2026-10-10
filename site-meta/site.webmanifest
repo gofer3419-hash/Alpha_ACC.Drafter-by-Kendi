@@ -1,6 +1,6 @@
 {
-  "name": "WiF Deck Drafter",
-  "short_name": "WiF Drafter",
+  "name": "ACC.DRAFTER",
+  "short_name": "ACC.DRAFTER",
   "icons": [
     {
       "src": "/android-chrome-192x192.png",
@@ -13,7 +13,7 @@
       "type": "image/png"
     }
   ],
-  "theme_color": "#ffffff",
-  "background_color": "#ffffff",
+  "theme_color": "#1f211b",
+  "background_color": "#1f211b",
   "display": "standalone"
 }

@@ -55,7 +55,7 @@ export class DeckDrafterRoute
         justify-content: center;
         flex: 1 1 100%;
         position: relative;
-        height: calc(100vh - 44px);
+        height: calc(100vh - var(--app-header-height));
       }
 
       simple-chip {
@@ -76,18 +76,11 @@ export class DeckDrafterRoute
         overflow: hidden;
         background-image: linear-gradient(
           to top,
-          #0f0209,
-          #23061d,
-          #330531,
-          #3e024b,
-          #41056a,
-          #520578,
-          #640385,
-          #770092,
-          #9b0089,
-          #b8007e,
-          #ce1173,
-          #e03168
+          hsla(75, 10%, 6%, 0.92),
+          hsla(350, 60%, 10%, 0.85),
+          hsla(348, 75%, 18%, 0.75),
+          hsla(346, 85%, 28%, 0.6),
+          hsla(346, 92%, 40%, 0.5)
         );
       }
 

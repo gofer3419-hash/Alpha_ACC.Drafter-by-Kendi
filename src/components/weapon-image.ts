@@ -12,7 +12,7 @@ export class WeaponImage extends LitElement {
         justify-content: center;
         flex-direction: column;
         width: 150px;
-        filter: hue-rotate(305deg) brightness(200%) saturate(10000%); 
+        filter: hue-rotate(345deg) brightness(200%) saturate(10000%); 
       
       }
 

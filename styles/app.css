@@ -10,12 +10,21 @@ html {
   --lumo-border-radius-m: var(--lumo-border-radius, 0px);
   --lumo-border-radius-l: 0px;
   --lumo-border-radius: 0px;
+  /* Top bar: offset from the top + bar height */
+  --app-header-offset: 10px;
+  --app-header-bar: 96px;
+  --app-header-height: calc(var(--app-header-offset) + var(--app-header-bar));
 
 }
 
 body {
   height: 100vh;
   margin: 0;
+  background-color: #1f211b;
+  background-image: url(../images/camo.svg);
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
 }
 
 main {
@@ -23,15 +32,23 @@ main {
 }
 
 html[theme~='dark'] {
-  --lumo-base-color: hsl(240, 7%, 11%);
-  --lumo-primary-text-color: hsl(305, 100%, 56%);
-  --lumo-primary-color: hsl(305, 100%, 56%);
-  --lumo-primary-color-50pct: hsla(305, 90%, 70%, 0.69);
-  --lumo-primary-color-10pct: hsla(305, 90%, 55%, 0.13);
+  /* Dark olive panels over the camouflage background */
+  --lumo-base-color: hsl(75, 9%, 10%);
+  --lumo-tint-5pct: hsla(40, 30%, 92%, 0.05);
 
-  --lumo-secondary-color: hsl(60, 98%, 66%);
-  --lumo-secondary-color-50pct: hsla(60, 98%, 66%, 0.69);
-  --lumo-secondary-color-10pct: hsla(60, 98%, 66%, 0.13);
+  /* Neon burgundy */
+  --acc-burgundy: hsl(345, 88%, 33%);
+  --acc-burgundy-glow: hsla(345, 100%, 45%, 0.6);
+  --lumo-primary-color: var(--acc-burgundy);
+  --lumo-primary-text-color: hsl(348, 100%, 66%);
+  --lumo-primary-contrast-color: #fff;
+  --lumo-primary-color-50pct: hsla(346, 92%, 45%, 0.6);
+  --lumo-primary-color-10pct: hsla(346, 92%, 45%, 0.16);
+
+  /* Sand, like the tank in the logo */
+  --lumo-secondary-color: hsl(42, 55%, 66%);
+  --lumo-secondary-color-50pct: hsla(42, 55%, 66%, 0.6);
+  --lumo-secondary-color-10pct: hsla(42, 55%, 66%, 0.13);
   --lumo-clickable-cursor: pointer;
 
   

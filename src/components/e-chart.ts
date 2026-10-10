@@ -80,7 +80,7 @@ export class EChart extends LitElement {
 }
 
 const theme = {
-  color: ['#ff1fec', '#fdfd55', '#1bf0fe', '#ff8a5b', '#06ff9c'],
+  color: ['#e0144c', '#fdfd55', '#1bf0fe', '#ff8a5b', '#06ff9c'],
   backgroundColor: 'rgba(51,51,51,0)',
   textStyle: {},
   title: {
@@ -94,11 +94,11 @@ const theme = {
   line: {
     itemStyle: {
       borderWidth: 1,
-      stroke: '#ff1fec'
+      stroke: '#e0144c'
     },
     lineStyle: {
       width: 2,
-      stroke: '#ff1fec'
+      stroke: '#e0144c'
     },
     symbolSize: 4,
     symbol: 'circle',
@@ -184,7 +184,7 @@ const theme = {
     symbolSize: 4,
     symbol: 'circle',
     smooth: false,
-    color: ['#ff1fec', '#fdfd55', '#1bf0fe', '#ff8a5b', '#06ff9c'],
+    color: ['#e0144c', '#fdfd55', '#1bf0fe', '#ff8a5b', '#06ff9c'],
     label: {
       color: '#f4f5f8',
     },
