@@ -112,12 +112,15 @@ export class DeckDrafterRoute
         overflow-y: auto;
         max-height: 100%;
         background-color: var(--lumo-base-color);
-        margin-top: var(--lumo-space-m);
+        margin-top: 56px;
+        max-height: calc(100% - 56px - var(--lumo-space-m));
+        box-sizing: border-box;
       }
 
       @media (max-width: 500px) {
         .card {
-          margin-top: 0;
+          margin-top: var(--lumo-space-m);
+          max-height: calc(100% - 2 * var(--lumo-space-m));
         }
       }
 
