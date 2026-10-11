@@ -2,7 +2,7 @@ import {css, html, LitElement, TemplateResult} from 'lit';
 import {customElement} from 'lit/decorators.js';
 import '../components/notification-manager';
 // @ts-ignore
-import AccLogo from '../../images/acc-logo.webp';
+import AccLogoTop from '../../images/acc-logo-top.webp';
 
 /**
  * Root layout: a slim top bar and the routed page below it.
@@ -39,8 +39,7 @@ export class Application extends LitElement {
       }
 
       header img {
-        height: 104px;
-        margin: -6px 0;
+        height: 86px;
         width: auto;
         filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.7));
       }
@@ -59,7 +58,7 @@ export class Application extends LitElement {
       <notification-manager></notification-manager>
       <header>
         <a href="/" title="Strona główna">
-          <img src=${AccLogo} alt="ACC.DRAFTER" />
+          <img src=${AccLogoTop} alt="ACC.DRAFTER" />
         </a>
       </header>
       <main>
