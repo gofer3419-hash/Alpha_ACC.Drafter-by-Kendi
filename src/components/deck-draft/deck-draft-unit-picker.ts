@@ -68,6 +68,8 @@ export class DeckDraftUnitPicker extends LitElement {
         flex: 0 0 auto;
         box-sizing: border-box;
         width: min(23.75rem, 88vw);
+        /* Cards 10% smaller, content included */
+        zoom: 0.9;
         padding: var(--lumo-space-s);
         background-color: hsla(0, 0%, 11%, 0.92);
         border: 1px solid var(--lumo-contrast-20pct);
