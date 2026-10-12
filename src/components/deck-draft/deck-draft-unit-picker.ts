@@ -41,6 +41,7 @@ export class DeckDraftUnitPicker extends LitElement {
          the select card grows and the button stays pinned to the bottom, so
          buttons are on one line whatever the card content. */
       .divisions {
+        perspective: 1600px;
         display: flex;
         align-items: stretch;
         overflow-x: auto;
@@ -119,7 +120,11 @@ export class DeckDraftUnitPicker extends LitElement {
   private minRowHeight = 0;
 
   firstUpdated() {
-    this.playAnimation();
+    if (this.animateOnEnable) {
+      this.playAnimation();
+    } else {
+      void this.flipIn();
+    }
     this.keepRowHeight();
   }
 
@@ -148,6 +153,40 @@ export class DeckDraftUnitPicker extends LitElement {
       }
     });
     this.rowObserver.observe(this.row);
+  }
+
+  /** Team lobby: the cards turn edge-on (first half of a 180 degree flip) */
+  flipOut(): Promise<void> {
+    if (!this.divs || this.divs.length === 0) {
+      return Promise.resolve();
+    }
+    return anime({
+      targets: this.divs,
+      rotateY: [0, 90],
+      duration: 350,
+      easing: 'easeInQuad',
+      delay: anime.stagger(120),
+    }).finished;
+  }
+
+  /** Team lobby: the new cards turn back to face the player (second half) */
+  flipIn(): Promise<void> {
+    if (!this.divs || this.divs.length === 0) {
+      return Promise.resolve();
+    }
+    const sound = this.shadowRoot?.getElementById('sound') as HTMLAudioElement | null;
+    if (sound) {
+      sound.volume = 0.1;
+      playSound(sound);
+    }
+    return anime({
+      targets: this.divs,
+      rotateY: [-90, 0],
+      opacity: [1, 1],
+      duration: 450,
+      easing: 'easeOutQuad',
+      delay: anime.stagger(120),
+    }).finished;
   }
 
   playAnimation() {
@@ -191,12 +230,12 @@ export class DeckDraftUnitPicker extends LitElement {
     ) {
       this.playAnimation();
     }
-    // Team lobby: the new cards slide in once they are ready
+    // Team lobby: the new cards flip in once they are ready
     if (
       changedProperties.has('revealKey') &&
       changedProperties.get('revealKey') !== undefined
     ) {
-      this.playAnimation();
+      void this.flipIn();
     }
   }
 

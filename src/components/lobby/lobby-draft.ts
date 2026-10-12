@@ -1,8 +1,9 @@
 import {css, html, TemplateResult} from 'lit';
-import {customElement, state} from 'lit/decorators.js';
+import {customElement, query, state} from 'lit/decorators.js';
 import '@vaadin/button';
 import '../deck-draft/deck-draft-division-picker';
 import '../deck-draft/deck-draft-unit-picker';
+import {DeckDraftUnitPicker} from '../deck-draft/deck-draft-unit-picker';
 import '../deck-draft/deck-draft-deck-display';
 import '../deck/deck-header';
 import '../deck/deck-title';
@@ -215,6 +216,9 @@ export class LobbyDraft extends DeckDraftRoute {
   @state()
   private applying = false;
 
+  @query('deck-draft-unit-picker')
+  private picker?: DeckDraftUnitPicker;
+
   /**
    * Cards kept on screen while the round is applied behind them (null = show
    * the current cards of the draft)
@@ -401,8 +405,10 @@ export class LobbyDraft extends DeckDraftRoute {
       }
       await lobby.act('ack', {round: this.appliedRound, done: full});
       if (frozen) {
-        // Then the new cards replace the shown ones and slide in
+        // Then the cards flip: the old ones turn edge-on, the new ones
+        // (already rendered underneath) turn back to face the player
         await sleep(Math.max(0, SHOW_PICK_MS - (Date.now() - shownSince)));
+        await this.picker?.flipOut();
         this.shownChoices = null;
         this.highlight = -1;
         this.revealKey += 1;
