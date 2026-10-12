@@ -17,17 +17,20 @@ import {getCodeForFactoryDescriptor} from '../../utils/get-code-for-factory-desc
 export class DeckDraftUnitSelectCard extends ArmouryWithTransportCard {
   static styles = [
     css`
+      /* The card fills the space the picker gives it, so every card in a row
+         has the same height and the same parts end up on the same lines. */
       :host {
         display: flex;
         flex-direction: column;
-        height: 100%;
+        flex: 1 1 auto;
+        min-height: 0;
         width: 100%;
       }
 
       .main {
         display: flex;
         flex-direction: column;
-        height: 100%;
+        flex: 1 1 auto;
         width: 100%;
         background-color: var(--lumo-contrast-10pct);
         border-radius: var(--lumo-border-radius-l);
@@ -43,16 +46,84 @@ export class DeckDraftUnitSelectCard extends ArmouryWithTransportCard {
         padding: 2px var(--lumo-space-s);
         margin-bottom: var(--lumo-space-xs);
         background-color: rgba(0, 0, 0, 0.45);
+        border-left: 3px solid currentColor;
+      }
+
+      /* Name row: always room for two lines, so the image below starts at the
+         same height whether the name is short or long. */
+      .title-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: var(--lumo-space-s);
+        margin-bottom: var(--lumo-space-xs);
       }
 
       .name {
         font-size: var(--lumo-font-size-xl);
         font-weight: bold;
+        line-height: 1.2;
+        min-height: 2.4em;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+      }
+
+      /* Weapon icons: one fixed row, every icon in the same box */
+      .weapons {
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+        height: 3rem;
+        padding: 0 var(--lumo-space-s);
+        border-bottom: 1px solid var(--lumo-contrast-10pct);
+        --weapon-icon-height: 2.125rem;
+      }
+
+      .weapons weapon-image {
+        flex: 1 1 0;
+        min-width: 0;
+        max-width: 25%;
+        width: auto;
+      }
+
+      /* Room for the largest panel (7 stats in 3 groups), so cards of
+         different unit types, and the next round, keep the same height. */
+      deck-draft-info-panel {
+        flex: 1 1 auto;
+        justify-content: flex-start;
+        margin-bottom: var(--lumo-space-s);
+        min-height: calc(
+          (var(--lumo-font-size-m) * 1.45 + var(--lumo-space-xs) * 2) * 7 +
+            var(--lumo-space-s) * 3
+        );
+      }
+
+      .transport-container {
+        margin-top: auto;
+        margin-bottom: var(--lumo-space-s);
+      }
+
+      /* Invisible stand-in for a unit without transport: same size */
+      .transport-container.placeholder {
+        visibility: hidden;
+      }
+
+      .command-bar {
+        display: flex;
+        justify-content: flex-end;
+        align-items: flex-end;
+        margin-top: auto;
+        padding-top: var(--lumo-space-xs);
+        border-top: 1px solid var(--lumo-contrast-10pct);
       }
 
       .availability {
+        flex: 0 0 auto;
         font-size: var(--lumo-font-size-xl);
-        color: var(--lumo-contrast-70pct);
+        font-weight: bold;
+        color: var(--lumo-secondary-color);
       }
 
       .units {
@@ -74,8 +145,20 @@ export class DeckDraftUnitSelectCard extends ArmouryWithTransportCard {
         align-items: center;
       }
 
+      /* Unit pictures differ by a few pixels in ratio: one fixed frame */
       .unit-image-container {
         position: relative;
+        aspect-ratio: 2 / 1;
+        overflow: hidden;
+        background-color: rgba(0, 0, 0, 0.25);
+        --unit-image-height: 100%;
+      }
+
+      .unit-image-container unit-image {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
       }
 
       .command-points {
@@ -84,6 +167,7 @@ export class DeckDraftUnitSelectCard extends ArmouryWithTransportCard {
       }
 
       .traits {
+        z-index: 2;
         display: flex;
         flex-direction: column-reverse;
         position: absolute;
@@ -98,6 +182,7 @@ export class DeckDraftUnitSelectCard extends ArmouryWithTransportCard {
       }
 
       .category-icon {
+        z-index: 2;
         bottom: 0;
         left: 0;
         position: absolute;
@@ -109,12 +194,8 @@ export class DeckDraftUnitSelectCard extends ArmouryWithTransportCard {
         display: flex;
         flex-direction: column;
         padding: var(--lumo-space-s) var(--lumo-space-m);
-        justify-content: space-between;
+        justify-content: flex-start;
         flex: 1 1 auto;
-      }
-
-      weapon-image {
-        width: 25%;
       }
 
       /**
@@ -127,6 +208,8 @@ export class DeckDraftUnitSelectCard extends ArmouryWithTransportCard {
         left: 0;
         width: 100%;
         height: 50%;
+        z-index: 1;
+        pointer-events: none;
         background-image: linear-gradient(
           to top,
           rgba(0, 0, 0, 0.9),
@@ -152,11 +235,6 @@ export class DeckDraftUnitSelectCard extends ArmouryWithTransportCard {
       .text-padding {
         padding-top: var(--lumo-space-xs);
         padding-bottom: var(--lumo-space-xs);
-      }
-
-      unit-image {
-        width: 100%;
-        overflow: hidden;
       }
 
       .rounded-border {
@@ -190,6 +268,7 @@ export class DeckDraftUnitSelectCard extends ArmouryWithTransportCard {
       }
 
       .info-icon-button {
+        z-index: 3;
         position: absolute;
         top: var(--lumo-space-xs);
         right: var(--lumo-space-xs);
@@ -238,14 +317,15 @@ export class DeckDraftUnitSelectCard extends ArmouryWithTransportCard {
           ${this.transport ? this.renderTransportModal(this.transport) : ''}
           <div class="veterancy"
             >${renderVeterancyBadge(this.activeVeterancy)}</div>
-          <div class="bar">
-            <div class="name">${unit.name}</div><div class="availability"
+          <div class="title-bar">
+            <div class="name" title=${unit.name}>${unit.name}</div>
+            <div class="availability"
               >x${veterancyQuantities[this.activeVeterancy]}</div>
           </div>
           <div class="main">
             ${this.renderUnitImageContainer(unit, this.pack, this.deck)}
             <unit-armor-view .unit=${unit}></unit-armor-view>
-            <div class="bar space-evenly" style="height: 40px;">
+            <div class="weapons">
               ${unit.weapons.map((weapon) => {
                 return html`<weapon-image .weapon=${weapon}></weapon-image>`;
               })}
@@ -253,8 +333,7 @@ export class DeckDraftUnitSelectCard extends ArmouryWithTransportCard {
             <div class="card-body">
               <deck-draft-info-panel .unit=${unit}></deck-draft-info-panel>
               ${this.renderTransport()}
-              <div class="bar">
-                <div></div>
+              <div class="command-bar">
                 <div class="command-points">${cmdPoints} PKT</div>
               </div>
             </div>
@@ -275,7 +354,15 @@ export class DeckDraftUnitSelectCard extends ArmouryWithTransportCard {
 
   renderTransport() {
     if (!this.transport || !this.pack || !this.deck) {
-      return html``;
+      return html`
+        <div class="transport-container placeholder" aria-hidden="true">
+          <div class="stat-name text-padding">Transport</div>
+          <div>
+            <div class="transport-name text-padding">&nbsp;</div>
+            <div class="unit-image-container rounded-border"></div>
+          </div>
+        </div>
+      `;
     }
 
     return html`

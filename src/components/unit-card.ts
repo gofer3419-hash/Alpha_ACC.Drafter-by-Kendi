@@ -22,7 +22,7 @@ export class UnitCard extends LitElement {
       }
 
       unit-image {
-        width: 300px;
+        width: 18.75rem;
       }
 
       :host {
@@ -35,7 +35,7 @@ export class UnitCard extends LitElement {
         padding-right: var(--lumo-space-s);
         padding-top: var(--lumo-space-s);
         padding-bottom: var(--lumo-space-s);
-        min-width: 300px;
+        min-width: 18.75rem;
         flex: 1 1 100%;
       }
 

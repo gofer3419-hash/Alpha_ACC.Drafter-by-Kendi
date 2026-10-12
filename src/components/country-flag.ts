@@ -25,7 +25,7 @@ export class CountryFlag extends LitElement {
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 40px;
+        width: 2.5rem;
       }
 
       img {

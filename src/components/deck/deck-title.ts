@@ -16,7 +16,7 @@ export class DeckTitle extends LitElement {
       }
 
       .title-row > * {
-        font-size: 16px;
+        font-size: 1rem;
       }
 
       .title {
@@ -37,7 +37,7 @@ export class DeckTitle extends LitElement {
       }
 
       .flags > * {
-        height: 60px;
+        height: 3.75rem;
       }
 
       h2 {

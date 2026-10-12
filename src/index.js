@@ -13,6 +13,7 @@ import './routes/home';
 import './routes/team-shuffle';
 import './routes/deck-drafter';
 import './routes/deck-draft';
+import './routes/lobby';
 
 import './services/router';
 

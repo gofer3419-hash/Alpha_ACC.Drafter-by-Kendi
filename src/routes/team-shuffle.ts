@@ -15,14 +15,14 @@ export class TeamShuffleRoute extends LitElement {
     return css`
       :host {
         display: block;
-        max-width: 640px;
+        max-width: 40rem;
         margin: 0 auto;
         padding: var(--lumo-space-l) var(--lumo-space-m);
       }
 
       vaadin-text-area {
         width: 100%;
-        min-height: 220px;
+        min-height: 13.75rem;
       }
 
       .error {

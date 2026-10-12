@@ -5,8 +5,11 @@
   "description": "Deck drafter for the WARNO mod A World in Flames, based on WarYes",
   "browserslist": "last 2 versions",
   "scripts": {
-    "start": "webpack serve",
-    "build": "webpack --mode production"
+    "start": "webpack --mode production && node server/server.js",
+    "serve": "node server/server.js",
+    "build": "webpack --mode production",
+    "dev": "webpack serve",
+    "dev:server": "node server/server.js --port 8081"
   },
   "license": "BSD-3-Clause",
   "vaadin": {

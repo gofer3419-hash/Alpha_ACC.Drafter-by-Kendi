@@ -2,6 +2,7 @@ import {css, html, LitElement, TemplateResult} from 'lit';
 import {customElement, state} from 'lit/decorators.js';
 import '@vaadin/icon';
 import {isSoundMuted, setSoundMuted} from '../utils/sound';
+import {applySideTheme} from '../utils/theme';
 
 @customElement('home-route')
 export class HomeRoute extends LitElement {
@@ -21,7 +22,7 @@ export class HomeRoute extends LitElement {
         flex-direction: column;
         gap: var(--lumo-space-m);
         width: 100%;
-        max-width: 360px;
+        max-width: 22.5rem;
       }
 
       a {
@@ -62,14 +63,20 @@ export class HomeRoute extends LitElement {
       }
 
       .sound vaadin-icon {
-        width: 18px;
-        height: 18px;
+        width: 1.125rem;
+        height: 1.125rem;
       }
     `;
   }
 
   @state()
   private muted = isSoundMuted();
+
+  connectedCallback() {
+    super.connectedCallback();
+    // Back at the menu: default colours
+    applySideTheme(null);
+  }
 
   private toggleSound() {
     this.muted = !this.muted;
@@ -79,6 +86,7 @@ export class HomeRoute extends LitElement {
   render(): TemplateResult {
     return html`
       <nav>
+        <a href="/lobby">Lobby: draft drużynowy</a>
         <a href="/teams">Losowanie drużyn</a>
         <a href="/drafter/wif">WiF Deck Drafter</a>
         <a href="/drafter/vanilla">VANILLA Deck Drafter</a>

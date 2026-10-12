@@ -19,7 +19,9 @@ Standalone API krok po kroku:
 - albo ręcznie z CMD:
     - wejdź do folderu: cd /d "D:\accdrafter"
     - npm install ( tylko za pierwszym razem )
-    - npm start ( tu sie nic nie zakończy, to działająca api, żeby zakończyć działanie strony - CTRL + C )
+    - npm start ( buduje stronę i uruchamia serwer; nic się nie zakończy, to działający serwer, żeby go zatrzymać - CTRL + C )
+
+- serwer na starcie wypisuje adresy dla innych graczy (linie "Inni"), np. adres z Radmina - gracze wchodzą na ten sam adres i łączą się w lobby (Lobby: draft drużynowy) kodem
 
 # Wersja na hosting / XAMPP
 - npm run build

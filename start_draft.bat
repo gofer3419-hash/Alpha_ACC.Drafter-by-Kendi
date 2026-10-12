@@ -17,6 +17,15 @@ if not exist node_modules (
   )
 )
 
-echo Uruchamiam strone: http://localhost:8080
+echo Buduje strone (przy kazdym uruchomieniu, kilkadziesiat sekund)...
+call npm run build
+if errorlevel 1 (
+  echo Budowanie nie powiodlo sie.
+  exit /b 1
+)
+
+echo.
+echo Uruchamiam serwer: http://localhost:8080
+echo Adresy dla graczy pokaze ponizej ("Inni").
 echo Aby zatrzymac serwer, zamknij to okno albo wcisnij Ctrl+C.
-call npm start
+call npm run serve

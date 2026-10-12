@@ -41,7 +41,7 @@ export class SummaryView extends LitElement {
 
       @media only screen and (max-width: 700px) {
         .division-title {
-          max-width: 200px;
+          max-width: 12.5rem;
           overflow: hidden;
           text-overflow: ellipsis;
           word-break: unset;
@@ -56,7 +56,7 @@ export class SummaryView extends LitElement {
       .armoury-category-cards {
         display: grid;
         padding: var(--lumo-space-xs);
-        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr));
         gap: var(--lumo-space-xs);
       }
 

@@ -8,7 +8,7 @@ export class DivisionFlag extends LitElement {
   static get styles() {
     return css`
       :host {
-        width: 40px;
+        width: 2.5rem;
         display: flex;
         justify-content: center;
         align-items: center;
@@ -16,6 +16,8 @@ export class DivisionFlag extends LitElement {
 
       img {
         width: 100%;
+        height: 100%;
+        object-fit: contain;
         overflow: hidden;
       }
 

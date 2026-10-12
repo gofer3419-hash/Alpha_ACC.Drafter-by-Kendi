@@ -78,11 +78,11 @@ export class ArmouryWithTransportCard extends ArmouryCard {
         flex: 1 1 auto;
         display: flex;
         flex-direction: column;
-        width: calc(100% - 24px);
+        width: calc(100% - 1.5rem);
       }
 
       .category-icon {
-        font-size: 48px;
+        font-size: 3rem;
       }
     `,
   ];
@@ -172,7 +172,7 @@ export class ArmouryWithTransportCard extends ArmouryCard {
           this.transportChangeClicked();
         }}
       >
-        <vaadin-icon style="font-size: 16px;" icon="vaadin:cog-o"></vaadin-icon>
+        <vaadin-icon style="font-size: 1rem;" icon="vaadin:cog-o"></vaadin-icon>
       </vaadin-button>
     </div>`;
   }

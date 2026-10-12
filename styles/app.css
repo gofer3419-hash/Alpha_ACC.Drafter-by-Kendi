@@ -3,6 +3,19 @@
   src: url(fonts/RobotoMono-VariableFont_wght.ttf);
 }
 
+/* Skala strony do monitora: 1rem = 16px przy 1920x1080. Rośnie i maleje razem
+   z oknem (liczy się węższy wymiar, więc ultrawide i 4K też wyglądają dobrze).
+   Poniżej 1001 px (telefon, tablet) zostaje 16px i działają media queries. */
+html {
+  font-size: 16px;
+}
+
+@media (min-width: 1001px) {
+  html {
+    font-size: clamp(13px, min(100vw / 120, 100vh / 67.5), 40px);
+  }
+}
+
 html {
   font-family: var(--lumo-font-family);
   --lumo-font-family: RobotoMono;
@@ -11,8 +24,8 @@ html {
   --lumo-border-radius-l: 0px;
   --lumo-border-radius: 0px;
   /* Top bar: offset from the top + bar height */
-  --app-header-offset: 10px;
-  --app-header-bar: 96px;
+  --app-header-offset: 0.625rem;
+  --app-header-bar: 6rem;
   --app-header-height: calc(var(--app-header-offset) + var(--app-header-bar));
 
 }
@@ -36,16 +49,18 @@ html[theme~='dark'] {
   --lumo-base-color: hsl(0, 0%, 11%);
   --lumo-tint-5pct: hsla(0, 0%, 92%, 0.05);
 
-  /* Neon burgundy */
-  --acc-burgundy: hsl(345, 85%, 39%);
+  /* One hue drives the accent colour: neon burgundy by default, blue after
+     choosing NATO, red after choosing PAKT (see html[data-side] below). */
+  --acc-h: 345;
+  --acc-burgundy: hsl(var(--acc-h), 85%, 39%);
   /* Lighter burgundy for thin shapes (weapon icons) on the dark background */
-  --acc-burgundy-light: hsl(346, 82%, 46%);
-  --acc-burgundy-glow: hsla(345, 100%, 45%, 0.6);
+  --acc-burgundy-light: hsl(var(--acc-h), 82%, 46%);
+  --acc-burgundy-glow: hsla(var(--acc-h), 100%, 45%, 0.6);
   --lumo-primary-color: var(--acc-burgundy);
-  --lumo-primary-text-color: hsl(347, 95%, 62%);
+  --lumo-primary-text-color: hsl(var(--acc-h), 95%, 62%);
   --lumo-primary-contrast-color: #fff;
-  --lumo-primary-color-50pct: hsla(346, 92%, 45%, 0.6);
-  --lumo-primary-color-10pct: hsla(346, 92%, 45%, 0.16);
+  --lumo-primary-color-50pct: hsla(var(--acc-h), 92%, 45%, 0.6);
+  --lumo-primary-color-10pct: hsla(var(--acc-h), 92%, 45%, 0.16);
 
   /* Sand, like the tank in the logo */
   --lumo-secondary-color: hsl(42, 55%, 66%);
@@ -76,6 +91,15 @@ html[theme~='dark'] {
   
 }
 
+/* Side theme: blue for NATO, red for PAKT */
+html[theme~='dark'][data-side='nato'] {
+  --acc-h: 214;
+}
+
+html[theme~='dark'][data-side='pact'] {
+  --acc-h: 2;
+}
+
 vaadin-dialog-overlay::part(header) {
   padding: 0;
 }
@@ -93,11 +117,11 @@ vaadin-dialog-overlay::part(header-content) {
 
 vaadin-dialog-overlay::part(overlay) {
   width: 100vw;
-  max-width: 600px;
+  max-width: 37.5rem;
 }
 
 vaadin-dialog-overlay::part(content) {
-  max-width: 600px;
+  max-width: 37.5rem;
 }
 
 div[slot='header-content'] {
@@ -126,7 +150,7 @@ vaadin-combo-box-item {
 }
 
 .unit-search-result unit-image {
-  width: 80px;
+  width: 5rem;
 }
 
 .unit-search-result .unit-name {
@@ -139,6 +163,6 @@ vaadin-combo-box-item {
 
 .unit-search-result country-flag {
   margin-right: var(--lumo-space-s);
-  width: 60px;
+  width: 3.75rem;
 }
 

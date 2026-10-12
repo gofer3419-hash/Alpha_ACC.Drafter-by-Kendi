@@ -48,7 +48,7 @@ export class DeckHeader extends LitElement {
 
       @media (max-width: 800px) {
         .toolbar-slot {
-          width: 200px;
+          width: 12.5rem;
         }
 
         .toolbar {
@@ -58,7 +58,7 @@ export class DeckHeader extends LitElement {
 
       @media (max-width: 600px) {
         .toolbar-slot {
-          width: 80px;
+          width: 5rem;
         }
       }
     `;

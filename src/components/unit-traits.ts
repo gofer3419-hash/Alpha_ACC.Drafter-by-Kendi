@@ -24,9 +24,9 @@ export class UnitTraits extends LitElement {
             color: var(--lumo-body-text-color);
             padding: 10px;
             text-transform: none;
-            max-width: 500px;
-            min-width: 220px;
-            font-size: 11px;
+            max-width: 31.25rem;
+            min-width: 13.75rem;
+            font-size: 0.6875rem;
             z-index: 1;
           }
 

@@ -38,7 +38,7 @@ export class UnitCardHeaderView extends LitElement {
       }
 
       a > vaadin-icon {
-        font-size: 12px;
+        font-size: 0.75rem;
       }
 
       div.unit-title {
@@ -87,7 +87,7 @@ export class UnitCardHeaderView extends LitElement {
       }
 
       mod-image {
-        height: 12px;
+        height: 0.75rem;
       }
 
       .left-side-header {
