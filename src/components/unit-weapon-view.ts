@@ -38,8 +38,8 @@ export class UnitWeaponView extends LitElement {
       }
 
       weapon-image {
-        max-width: 100px;
-        max-height: 50px;
+        max-width: 6.25rem;
+        max-height: 3.125rem;
         position: relative;
       }
 

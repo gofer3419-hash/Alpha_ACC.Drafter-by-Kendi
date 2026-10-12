@@ -10,17 +10,25 @@ import {DeckDraftClientEngine, DraftOptions} from './DeckDraftClientEngine';
 export class DeckDraftFactory {
   static async createClientEngine(
     dataset: Dataset,
-    options: DraftOptions = {}
+    options: DraftOptions = {},
+    storageKey?: string
   ): Promise<DeckDraftClientEngine> {
     const engine = new DeckDraftClientEngine(dataset);
+    if (storageKey) {
+      engine.storageKey = storageKey;
+    }
     await engine.initializeDraft(options);
     return engine;
   }
 
   static async createEngineFromLocalStorage(
-    dataset: Dataset
+    dataset: Dataset,
+    storageKey?: string
   ): Promise<DeckDraftClientEngine> {
     const engine = new DeckDraftClientEngine(dataset);
+    if (storageKey) {
+      engine.storageKey = storageKey;
+    }
     await engine.initializeUnitAndDivisionData();
     engine.state = await engine.getStateFromLocalStorage();
     return engine;

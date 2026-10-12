@@ -1,5 +1,5 @@
 @echo off
-title WiF Deck Drafter
+title ACC.DRAFTER
 cd /d "%~dp0"
 
 where npm >nul 2>nul
@@ -19,7 +19,17 @@ if not exist node_modules (
   )
 )
 
-echo Uruchamiam strone: http://localhost:8080
-echo Zamknij to okno, aby zatrzymac serwer.
-call npm start -- --open
+echo Buduje strone (przy kazdym uruchomieniu, kilkadziesiat sekund)...
+call npm run build
+if errorlevel 1 (
+  echo Budowanie nie powiodlo sie.
+  pause
+  exit /b 1
+)
+
+echo.
+echo Uruchamiam serwer. Adresy dla graczy pokaze ponizej ("Inni").
+echo Przegladarka otworzy sie za chwile.
+start "" http://localhost:8080
+call npm run serve
 pause

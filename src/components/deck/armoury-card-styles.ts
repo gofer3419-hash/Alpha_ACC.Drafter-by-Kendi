@@ -4,7 +4,7 @@ export const armouryCardStyles = css`
   :host {
     display: flex;
     flex-direction: column;
-    max-width: 150px;
+    max-width: 9.375rem;
   }
   .main {
     background-color: var(--lumo-contrast-5pct);
@@ -27,8 +27,8 @@ export const armouryCardStyles = css`
     width: 100%;
     display: flex;
     flex-direction: row;
-    min-height: 76px;
-    min-width: 150px;
+    min-height: 4.75rem;
+    min-width: 9.375rem;
   }
 
   .veterancy {
@@ -57,10 +57,10 @@ export const armouryCardStyles = css`
     width: 100%;
     box-sizing: border-box;    
     font-size: var(--lumo-font-size-xs);
-    min-height: 20px;
+    min-height: 1.25rem;
     justify-content: space-around;
     color: var(--lumo-contrast-60pct);
-    height: 37px;
+    height: 2.3125rem;
   }
 
 
@@ -119,7 +119,7 @@ export const armouryCardStyles = css`
     align-items: center;
     justify-content: center;
     text-align: center;
-    height: 30px;
+    height: 1.875rem;
     overflow: hidden;
     text-overflow: ellipsis;
     flex: 1 1 0;
@@ -171,6 +171,6 @@ export const armouryCardStyles = css`
 
   unit-image {
     // margin-bottom: var(--lumo-space-s);
-    min-height: 76px;
+    min-height: 4.75rem;
   }
 `;

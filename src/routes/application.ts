@@ -27,9 +27,10 @@ export class Application extends LitElement {
         padding: 0 var(--lumo-space-m);
         background: linear-gradient(
           to bottom,
-          hsla(0, 0%, 8%, 0.92),
-          hsla(0, 0%, 12%, 0.88)
+          hsla(var(--acc-h, 345), 25%, 8%, 0.92),
+          hsla(var(--acc-h, 345), 20%, 12%, 0.88)
         );
+        border-bottom: 2px solid var(--acc-burgundy);
       }
 
       header a {
@@ -39,7 +40,7 @@ export class Application extends LitElement {
       }
 
       header img {
-        height: 86px;
+        height: 5.375rem;
         width: auto;
         filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.7));
       }

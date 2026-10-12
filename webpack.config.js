@@ -12,6 +12,12 @@ module.exports = {
   devServer: {
     // Serve index.html for client-side routes like /draft
     historyApiFallback: true,
+    // Live stream of the lobby must not be compressed or buffered
+    compress: false,
+    // `npm run dev` + `npm run dev:server`: lobby API of the second process
+    proxy: {
+      '/api': 'http://localhost:8081',
+    },
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],

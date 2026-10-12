@@ -42,7 +42,7 @@ export class DeckDraftDeckDisplay extends LitElement {
 
       .deck-category-cards {
         display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        grid-template-columns: repeat(auto-fill, minmax(9.375rem, 1fr));
         place-items: center;
       }
 

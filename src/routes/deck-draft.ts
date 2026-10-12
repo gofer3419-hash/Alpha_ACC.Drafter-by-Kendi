@@ -14,14 +14,15 @@ import {Dataset, isDataset} from '../types/dataset';
 import {Division} from '../types/deck-builder';
 import {Unit, UnitMap} from '../types/unit';
 import {Deck} from '../classes/deck';
-import {exportDeckToCode} from '../utils/export-deck-to-code';
+import {exportDeckToCode, getDeckCode} from '../utils/export-deck-to-code';
 import {SideDrawer} from 'side-drawer';
 import {DeckDraftFactory} from '../classes/deck-drafter/DeckDraftFactory';
 import {DeckDraftController} from '../classes/deck-drafter/DeckDraftController';
+import {applySideTheme, loadDraftSide} from '../utils/theme';
 
 export type DeckDraftState = UnitPickState | DivisionPickState;
 
-interface DivisionPickState {
+export interface DivisionPickState {
   phase: 'DIVISION_PICK';
   data: {
     choices: string[];
@@ -92,7 +93,12 @@ export class DeckDraftRoute extends LitElement implements BeforeEnterObserver {
         display: flex;
         flex-direction: column;
         width: 100%;
-        padding: var(--lumo-space-m);
+        box-sizing: border-box;
+        margin: var(--lumo-space-m);
+        padding: var(--lumo-space-l);
+        background-color: hsla(0, 0%, 11%, 0.92);
+        border: 1px solid var(--lumo-contrast-20pct);
+        border-top: 3px solid var(--acc-burgundy);
       }
 
       .deck-title {
@@ -104,6 +110,45 @@ export class DeckDraftRoute extends LitElement implements BeforeEnterObserver {
       .button-bar {
         display: flex;
         gap: var(--lumo-space-s);
+      }
+
+      .deck-code-box {
+        display: flex;
+        flex-direction: column;
+        gap: var(--lumo-space-xs);
+        margin: var(--lumo-space-m) 0;
+        padding: var(--lumo-space-m);
+        background-color: rgba(0, 0, 0, 0.35);
+        border: 1px solid var(--lumo-contrast-20pct);
+        border-left: 3px solid var(--lumo-secondary-color);
+      }
+
+      .deck-code-box label {
+        font-size: var(--lumo-font-size-s);
+        letter-spacing: 0.05em;
+        color: var(--lumo-secondary-color);
+      }
+
+      .deck-code-box textarea {
+        box-sizing: border-box;
+        width: 100%;
+        min-height: 5.625rem;
+        padding: var(--lumo-space-s);
+        font-family: monospace;
+        font-size: var(--lumo-font-size-s);
+        word-break: break-all;
+        color: var(--lumo-body-text-color);
+        background-color: var(--lumo-contrast-10pct);
+        border: 1px solid var(--lumo-contrast-30pct);
+        outline: none;
+        resize: vertical;
+        user-select: text;
+        -webkit-user-select: text;
+      }
+
+      .deck-code-box textarea:focus {
+        border-color: var(--acc-burgundy);
+        box-shadow: 0 0 10px var(--acc-burgundy-glow);
       }
 
       @media (max-width: 1000px) {
@@ -130,7 +175,7 @@ export class DeckDraftRoute extends LitElement implements BeforeEnterObserver {
       .button-drawer {
         position: fixed;
         bottom: 0;
-        height: 60px;
+        height: 3.75rem;
         width: 100%;
         background-color: var(--lumo-base-color);
         z-index: 1;
@@ -149,16 +194,16 @@ export class DeckDraftRoute extends LitElement implements BeforeEnterObserver {
   }
 
   @state()
-  private divisions?: Division[];
+  protected divisions?: Division[];
 
   @state()
-  private units?: Unit[];
+  protected units?: Unit[];
 
   @state()
-  private unitMap?: UnitMap;
+  protected unitMap?: UnitMap;
 
   @state()
-  private showDeckDrawer = false;
+  protected showDeckDrawer = false;
 
   @query('side-drawer')
   drawer!: SideDrawer;
@@ -178,27 +223,40 @@ export class DeckDraftRoute extends LitElement implements BeforeEnterObserver {
       return true;
     },
   })
-  private activeDeck: Deck | null = null;
+  protected activeDeck: Deck | null = null;
 
   @state({
     hasChanged: () => {
       return true;
     },
   })
-  private state?: DeckDraftState;
+  protected state?: DeckDraftState;
 
   engineController?: DeckDraftController;
 
   @state()
-  private disableButtons = false;
+  protected disableButtons = false;
 
   @state()
   completing = false;
 
-  /** Data set of this draft, from the URL (/drafter/:dataset/:sessionId) */
-  private draftDataset: Dataset = 'wif';
+  /** True once the deck code was copied (or the user chose to leave without it) */
+  protected codeCopied = false;
 
-  private get startPage() {
+  @query('#deck-code')
+  codeField?: HTMLTextAreaElement;
+
+  async copyDeckCode() {
+    const copied = await exportDeckToCode(this.activeDeck, this.codeField);
+    if (copied) {
+      this.codeCopied = true;
+    }
+  }
+
+  /** Data set of this draft, from the URL (/drafter/:dataset/:sessionId) */
+  protected draftDataset: Dataset = 'wif';
+
+  protected get startPage() {
     return `/drafter/${this.draftDataset}`;
   }
 
@@ -209,6 +267,8 @@ export class DeckDraftRoute extends LitElement implements BeforeEnterObserver {
       return;
     }
     this.draftDataset = dataset;
+    // A reload keeps the colour of the chosen side
+    applySideTheme(loadDraftSide(dataset));
 
     let divisions: Division[];
     let units: Unit[];
@@ -247,7 +307,7 @@ export class DeckDraftRoute extends LitElement implements BeforeEnterObserver {
     }
   }
 
-  private handleState(state: UnitPickState | DivisionPickState) {
+  protected handleState(state: UnitPickState | DivisionPickState) {
     this.state = state;
     if (
       isUnitPickState(state) &&
@@ -298,6 +358,15 @@ export class DeckDraftRoute extends LitElement implements BeforeEnterObserver {
    * that is not part of this site, so return to the drafter start page.
    */
   async completeDraft() {
+    if (
+      !this.codeCopied &&
+      !window.confirm(
+        'Nie skopiowano kodu decku. Po zakończeniu draftu kod zniknie. Zakończyć mimo to?'
+      )
+    ) {
+      return;
+    }
+
     try {
       this.completing = true;
       if (this.engineController && this.state?.phase === 'UNIT_PICK') {
@@ -341,7 +410,7 @@ export class DeckDraftRoute extends LitElement implements BeforeEnterObserver {
                     <div class="button-bar">
                       <vaadin-button
                         theme="large"
-                        @click=${() => exportDeckToCode(this.activeDeck!)}
+                        @click=${() => this.copyDeckCode()}
                       >
                         Kopiuj kod
                       </vaadin-button>
@@ -355,6 +424,22 @@ export class DeckDraftRoute extends LitElement implements BeforeEnterObserver {
                     </div>
                   </div>
                 </deck-header>
+                <div class="deck-code-box">
+                  <label for="deck-code">
+                    Kod decku (do importu w grze). Kliknij w pole, aby go
+                    zaznaczyć:
+                  </label>
+                  <textarea
+                    id="deck-code"
+                    readonly
+                    rows="3"
+                    .value=${getDeckCode(this.activeDeck) ?? ''}
+                    @focus=${(e: FocusEvent) =>
+                      (e.target as HTMLTextAreaElement).select()}
+                    @click=${(e: MouseEvent) =>
+                      (e.target as HTMLTextAreaElement).select()}
+                  ></textarea>
+                </div>
                 <summary-view .deck=${this.activeDeck}></summary-view>
               </div>
             </div>`

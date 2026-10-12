@@ -61,7 +61,12 @@ export interface DraftOptions {
 }
 
 export class DeckDraftClientEngine implements DeckDraftEngine {
-  constructor(public readonly dataset: Dataset) {}
+  /** Where the draft is kept in localStorage (team lobbies use their own) */
+  storageKey: string;
+
+  constructor(public readonly dataset: Dataset) {
+    this.storageKey = DATASETS[dataset].draftStorageKey;
+  }
 
   units: Unit[] = [];
   divisions: Division[] = [];
@@ -129,15 +134,12 @@ export class DeckDraftClientEngine implements DeckDraftEngine {
 
   // store state in local storage
   async setStateToLocalStorage(state: unknown) {
-    localStorage.setItem(
-      DATASETS[this.dataset].draftStorageKey,
-      JSON.stringify(state)
-    );
+    localStorage.setItem(this.storageKey, JSON.stringify(state));
     return;
   }
 
   async getStateFromLocalStorage() {
-    const state = localStorage.getItem(DATASETS[this.dataset].draftStorageKey);
+    const state = localStorage.getItem(this.storageKey);
     if (!state) {
       throw new Error('No state found in local storage');
     }
@@ -145,7 +147,7 @@ export class DeckDraftClientEngine implements DeckDraftEngine {
   }
 
   clearStateFromLocalStorage() {
-    localStorage.removeItem(DATASETS[this.dataset].draftStorageKey);
+    localStorage.removeItem(this.storageKey);
   }
 
   async chooseOption(choice: number): Promise<void> {
@@ -263,6 +265,8 @@ export class DeckDraftClientEngine implements DeckDraftEngine {
       };
 
       this.state = nextSessionStateData;
+      // Keep every pick, so a reload does not lose or re-roll the draft
+      this.setStateToLocalStorage(this.state);
     }
 
     return;

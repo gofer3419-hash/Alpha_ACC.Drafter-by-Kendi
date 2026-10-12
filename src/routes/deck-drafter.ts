@@ -8,6 +8,7 @@ import {DeckDraftFactory} from '../classes/deck-drafter/DeckDraftFactory';
 import {DraftSide} from '../classes/deck-drafter/DeckDraftClientEngine';
 import {BundleManagerService, Dlc} from '../services/bundle-manager';
 import {Dataset, DATASETS, isDataset} from '../types/dataset';
+import {applySideTheme, saveDraftSide} from '../utils/theme';
 
 /** "1 dywizja", "3 dywizje", "5 dywizji" */
 function divisionsLabel(count: number): string {
@@ -92,10 +93,10 @@ export class DeckDrafterRoute
         background-image: linear-gradient(
           to top,
           hsla(0, 0%, 6%, 0.92),
-          hsla(350, 60%, 10%, 0.85),
-          hsla(348, 75%, 18%, 0.75),
-          hsla(346, 85%, 28%, 0.6),
-          hsla(346, 92%, 40%, 0.5)
+          hsla(var(--acc-h, 345), 60%, 10%, 0.85),
+          hsla(var(--acc-h, 345), 75%, 18%, 0.75),
+          hsla(var(--acc-h, 345), 85%, 28%, 0.6),
+          hsla(var(--acc-h, 345), 92%, 40%, 0.5)
         );
       }
 
@@ -127,8 +128,8 @@ export class DeckDrafterRoute
         overflow-y: auto;
         max-height: 100%;
         background-color: var(--lumo-base-color);
-        margin-top: 56px;
-        max-height: calc(100% - 56px - var(--lumo-space-m));
+        margin-top: 3.5rem;
+        max-height: calc(100% - 3.5rem - var(--lumo-space-m));
         box-sizing: border-box;
       }
 
@@ -155,11 +156,11 @@ export class DeckDrafterRoute
       .center {
         position: absolute;
         z-index: 1;
-        max-width: 600px;
+        max-width: 37.5rem;
       }
 
       .card img {
-        max-width: 320px;
+        max-width: 20rem;
       }
 
       .header {
@@ -191,7 +192,7 @@ export class DeckDrafterRoute
       }
 
       .button-container vaadin-button {
-        min-width: 140px;
+        min-width: 8.75rem;
       }
 
       vaadin-button.nato {
@@ -211,7 +212,7 @@ export class DeckDrafterRoute
       }
 
       .label > simple-chip {
-        height: 16px;
+        height: 1rem;
         font-size: var(--lumo-font-size-xs);
       }
 
@@ -236,8 +237,8 @@ export class DeckDrafterRoute
       }
 
       .dlc-list input {
-        width: 18px;
-        height: 18px;
+        width: 1.125rem;
+        height: 1.125rem;
         accent-color: var(--lumo-primary-color);
       }
 
@@ -309,6 +310,8 @@ export class DeckDrafterRoute
     this.draftDataset = dataset;
     this.chosenSide = null;
     this.error = '';
+    // No side yet: default colours
+    applySideTheme(null);
 
     try {
       this.divisions = await BundleManagerService.getDivisions(dataset);
@@ -351,11 +354,19 @@ export class DeckDrafterRoute
   }
 
   private chooseSide(side: DraftSide) {
+    // The whole site turns blue (NATO) or red (PAKT)
+    applySideTheme(side);
+    saveDraftSide(this.draftDataset, side);
     if (this.hasDlcChoice) {
       this.chosenSide = side;
     } else {
       this.startClientDraft(side);
     }
+  }
+
+  private backToSides() {
+    this.chosenSide = null;
+    applySideTheme(null);
   }
 
   private setOwnedDlc(ids: Iterable<string>) {
@@ -476,7 +487,7 @@ export class DeckDrafterRoute
         <vaadin-button
           theme="large"
           ?disabled="${this.disableDraftButton}"
-          @click="${() => (this.chosenSide = null)}"
+          @click="${() => this.backToSides()}"
         >
           Wstecz
         </vaadin-button>

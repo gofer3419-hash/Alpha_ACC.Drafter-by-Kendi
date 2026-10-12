@@ -89,7 +89,7 @@ export class IndividualWeaponView extends LitElement {
       }
 
       .accuracy-scaling > div {
-        height: 100px;
+        height: 6.25rem;
         flex: 1 1 100%;
       }
 

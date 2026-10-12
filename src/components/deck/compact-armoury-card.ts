@@ -57,7 +57,7 @@ export class CompactArmouryCard extends ArmouryWithTransportCard {
         flex: 1 1 0%;
         align-items: center;
         justify-content: center;
-        height: 13px;
+        height: 0.8125rem;
       }
 
       .cmd-points {
@@ -93,8 +93,8 @@ export class CompactArmouryCard extends ArmouryWithTransportCard {
       }
 
       .veterancy vaadin-icon {
-        width: 20px;
-        height: 20px;
+        width: 1.25rem;
+        height: 1.25rem;
       }
     `,
   ];

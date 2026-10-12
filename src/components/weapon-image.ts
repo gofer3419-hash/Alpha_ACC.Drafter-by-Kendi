@@ -11,19 +11,21 @@ export class WeaponImage extends LitElement {
         align-items: center;
         justify-content: center;
         flex-direction: column;
-        width: 150px;
+        width: 9.375rem;
       }
 
       img {
         width: 100%;
-        max-height: 56px;
+        max-height: 3.5rem;
       }
 
       /* The icon shape filled with the button burgundy */
       .icon {
         width: 100%;
+        /* A parent can fix the height so all icons share one box */
+        height: var(--weapon-icon-height, auto);
         aspect-ratio: 236 / 88;
-        max-height: 56px;
+        max-height: 3.5rem;
         background-color: var(--acc-burgundy-light);
         -webkit-mask-repeat: no-repeat;
         mask-repeat: no-repeat;

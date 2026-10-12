@@ -20,7 +20,9 @@ export class DeckDraftDivisionPicker extends LitElement {
       }
 
       division-flag {
-        width: 50%;
+        width: 55%;
+        aspect-ratio: 1 / 1;
+        margin: var(--lumo-space-m) 0 var(--lumo-space-s);
       }
 
       h2 {
@@ -43,30 +45,51 @@ export class DeckDraftDivisionPicker extends LitElement {
         text-align: center;
         font-size: var(--lumo-font-size-xxl);
         font-weight: bold;
+        color: var(--lumo-secondary-color);
         padding: var(--lumo-space-xs);
       }
 
       .divisions {
         display: flex;
         flex-wrap: wrap;
+        align-items: stretch;
         justify-content: center;
         gap: var(--lumo-space-m);
         position: relative;
+        padding: 0 var(--lumo-space-m) var(--lumo-space-m);
       }
 
+      /* Equal cards: the emblem area grows, the button sits at the bottom */
       .division {
         animation-fill-mode: forwards;
-        flex: 1 1 100%;
-        width: 33%;
+        flex: 1 1 17.5rem;
+        max-width: 25rem;
         display: flex;
-        max-width: 400px;
         flex-direction: column;
+        box-sizing: border-box;
+        padding: var(--lumo-space-m);
+        background-color: hsla(0, 0%, 11%, 0.92);
+        border: 1px solid var(--lumo-contrast-20pct);
+        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      }
+
+      .division:hover {
+        border-color: var(--acc-burgundy);
+        box-shadow: 0 0 18px var(--acc-burgundy-glow);
+      }
+
+      .division vaadin-button {
+        flex: none;
+        margin-top: var(--lumo-space-s);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
       }
 
       .deck-draft-card {
         display: flex;
         flex-direction: column;
         align-items: center;
+        flex: 1 1 auto;
       }
     `;
   }
@@ -123,6 +146,7 @@ export class DeckDraftDivisionPicker extends LitElement {
 
   chooseDivision(choice: number) {
     this.disable = true;
+
     this.playAnimation(choice);
 
     // delay by 250 ms
@@ -213,14 +237,13 @@ export class DeckDraftDivisionPicker extends LitElement {
 
         ${this.disable
           ? html``
-          : html`      <vaadin-button
-          ?disabled=${this.disable}
-          theme="primary large"
-          @click=${() => this.chooseDivision(index)}
-        >
-          Wybierz
-        </vaadin-button>
-      </div>`}
+          : html`<vaadin-button
+              ?disabled=${this.disable}
+              theme="primary large"
+              @click=${() => this.chooseDivision(index)}
+            >
+              Wybierz
+            </vaadin-button>`}
       </div>
     `;
   }
