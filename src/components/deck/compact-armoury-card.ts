@@ -2,6 +2,8 @@ import {customElement /*, property*/} from 'lit/decorators.js';
 import {html, css, TemplateResult} from 'lit';
 import {ArmouryWithTransportCard} from './armoury-with-transport-card';
 import {getIconForVeterancy} from '../../utils/get-icon-for-veterancy';
+import {getIconForTrait} from '../../utils/get-icon-for-trait';
+import {getIconForSpecialty} from '../../utils/get-icon-for-specialty';
 import { Deck } from '../../classes/deck';
 
 @customElement('compact-armoury-card')
@@ -84,12 +86,49 @@ export class CompactArmouryCard extends ArmouryWithTransportCard {
 
       .veterancy {
         position: absolute;
-        top: 0.5;
+        top: 1.25rem;
         right: 0;
         background-color: rgba(0, 0, 0, 0.75);
         border-radius: var(--lumo-border-radius-s);
         padding: 1px 3px;
         display: flex;
+      }
+
+      /* Traits of the unit, top centre between availability and points */
+      .traits {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 1px;
+        padding: 1px 2px;
+        background-color: rgba(0, 0, 0, 0.75);
+        border-bottom-left-radius: var(--lumo-border-radius-s);
+        border-bottom-right-radius: var(--lumo-border-radius-s);
+      }
+
+      .traits vaadin-icon {
+        width: 1rem;
+        height: 1rem;
+        color: var(--lumo-body-text-color);
+      }
+
+      /* Command units: accent frame and a CMD tag in the name bar */
+      .main.command {
+        box-shadow: inset 0 0 0 2px var(--lumo-secondary-color);
+      }
+
+      .cmd-tag {
+        flex: none;
+        margin-left: 2px;
+        padding: 0 3px;
+        font-size: 0.5625rem;
+        font-weight: 700;
+        line-height: 0.8125rem;
+        letter-spacing: 0.05em;
+        color: #111;
+        background-color: var(--lumo-secondary-color);
       }
 
       .veterancy vaadin-icon {
@@ -113,8 +152,13 @@ export class CompactArmouryCard extends ArmouryWithTransportCard {
           cmdPoints += this.transport.commandPoints;
         }
 
+        // Traits with an icon; the command trait is shown as the CMD tag
+        const traits = (unit.specialities || []).filter(
+          (trait) => trait !== '_leader' && !!getIconForSpecialty(trait)
+        );
+
         return html`
-          <div class="main">
+          <div class="main ${unit.isCommand ? 'command' : ''}">
             <unit-image .unit=${unit}></unit-image>
             <div class="cmd-points">${cmdPoints}</div>
             <div class="availability">
@@ -123,13 +167,21 @@ export class CompactArmouryCard extends ArmouryWithTransportCard {
             <div class="veterancy">
               ${getIconForVeterancy(this.activeVeterancy)}
             </div>
+            ${traits.length
+              ? html`<div class="traits">
+                  ${traits.map((trait) => getIconForTrait(trait))}
+                </div>`
+              : ''}
             ${this.transport?.name
               ? html` <div class="details">
                   <div class="name">${this.transport?.name}</div>
                 </div>`
               : ''}
 
-            <div class="unit-name"><div class="name">${unit.name}</div></div>
+            <div class="unit-name">
+              ${unit.isCommand ? html`<span class="cmd-tag" title="Jednostka dowódcza">CMD</span>` : ''}
+              <div class="name">${unit.name}</div>
+            </div>
           </div>
         `;
       }
