@@ -7,8 +7,6 @@ import {Unit} from '../../types/unit';
 import './deck-draft-button';
 import './deck-draft-unit-select-card';
 import anime from 'animejs/lib/anime.es.js';
-// @ts-ignore
-import Wz93 from '../../../images/wz93.svg';
 
 @customElement('deck-draft-unit-picker')
 export class DeckDraftUnitPicker extends LitElement {
@@ -96,58 +94,6 @@ export class DeckDraftUnitPicker extends LitElement {
         /* !important: the card animation leaves an inline opacity */
         opacity: 0.25 !important;
         transition: opacity 0.3s ease;
-      }
-
-      /* Team lobby: while the round is applied the cards hide behind a
-         wz.93 curtain with the emblem of this player's division */
-      .stage {
-        position: relative;
-      }
-
-      .curtain {
-        position: absolute;
-        inset: 0;
-        z-index: 5;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background-size: cover;
-        background-position: center;
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.35s ease;
-      }
-
-      .curtain::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background: radial-gradient(
-          ellipse at center,
-          rgba(0, 0, 0, 0.15) 0%,
-          rgba(0, 0, 0, 0.55) 70%,
-          rgba(0, 0, 0, 0.75) 100%
-        );
-      }
-
-      .curtain.on {
-        opacity: 1;
-        pointer-events: auto;
-      }
-
-      .curtain img.emblem {
-        position: relative;
-        width: auto;
-        height: min(14rem, 60%);
-        max-width: 60%;
-        object-fit: contain;
-        filter: drop-shadow(0 0.4rem 1rem rgba(0, 0, 0, 0.8));
-        transform: scale(0.92);
-        transition: transform 0.6s ease;
-      }
-
-      .curtain.on img.emblem {
-        transform: scale(1);
       }
 
       deck-draft-button {
@@ -245,7 +191,7 @@ export class DeckDraftUnitPicker extends LitElement {
     ) {
       this.playAnimation();
     }
-    // Team lobby: the new cards slide in once the curtain is lifted
+    // Team lobby: the new cards slide in once they are ready
     if (
       changedProperties.has('revealKey') &&
       changedProperties.get('revealKey') !== undefined
@@ -271,13 +217,6 @@ export class DeckDraftUnitPicker extends LitElement {
   @property({type: Number})
   revealKey?: number;
 
-  /** Team lobby: show the wz.93 curtain over the cards */
-  @property({type: Boolean})
-  curtain = false;
-
-  /** Team lobby: division whose emblem sits on the curtain */
-  @property()
-  emblemDivision = '';
 
   /** Team lobby: card (0, 1, 2) taken in this round, -1 for none */
   @property({type: Number})
@@ -311,27 +250,10 @@ export class DeckDraftUnitPicker extends LitElement {
         <source src="/draw.wav" type="audio/wav" />
         <!-- Add additional <source> elements for other audio formats (e.g., OGG, WAV) -->
       </audio>
-      <div class="stage">
-        <div class="divisions">
-          ${this.choices.map((choice, index) =>
-            this.renderUnitButton(choice, index)
-          )}
-        </div>
-        <div
-          class="curtain ${this.curtain ? 'on' : ''}"
-          style="background-image: url(${Wz93})"
-          aria-hidden=${this.curtain ? 'false' : 'true'}
-        >
-          ${this.emblemDivision
-            ? html`<img
-                class="emblem"
-                src="/divisions/${this.emblemDivision}.png"
-                alt=""
-                @error=${(e: Event) =>
-                  ((e.target as HTMLImageElement).style.display = 'none')}
-              />`
-            : ''}
-        </div>
+      <div class="divisions">
+        ${this.choices.map((choice, index) =>
+          this.renderUnitButton(choice, index)
+        )}
       </div>
     `;
   }

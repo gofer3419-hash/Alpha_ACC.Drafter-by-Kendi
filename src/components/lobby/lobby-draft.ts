@@ -11,6 +11,7 @@ import 'side-drawer';
 import {
   DeckDraftRoute,
   DeckDraftState,
+  PackChoice,
   UnitPickState,
 } from '../../routes/deck-draft';
 import {DeckDraftFactory} from '../../classes/deck-drafter/DeckDraftFactory';
@@ -32,12 +33,11 @@ import {Deck} from '../../classes/deck';
 
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-/** How long the card taken by the round glows before the curtain falls */
-const PICK_GLOW_MS = 900;
-/** Fade of the wz.93 curtain (matches the CSS transition of the picker) */
-const CURTAIN_FADE_MS = 350;
-/** The curtain stays at least this long, so the swap never flickers */
-const CURTAIN_MIN_MS = 900;
+/**
+ * How long the cards stay on screen with the taken one highlighted. The next
+ * cards are drawn and their images loaded meanwhile, behind the shown ones.
+ */
+const SHOW_PICK_MS = 2500;
 /** Do not wait longer than this for the images of the new cards */
 const PRELOAD_MAX_MS = 2500;
 
@@ -215,9 +215,12 @@ export class LobbyDraft extends DeckDraftRoute {
   @state()
   private applying = false;
 
-  /** wz.93 curtain over the cards while a round is applied */
+  /**
+   * Cards kept on screen while the round is applied behind them (null = show
+   * the current cards of the draft)
+   */
   @state()
-  private curtain = false;
+  private shownChoices: PackChoice[] | null = null;
 
   /** Bumped when new cards should slide in */
   @state()
@@ -331,8 +334,8 @@ export class LobbyDraft extends DeckDraftRoute {
       } while (this.again);
     } catch (error) {
       console.error('Draft sync failed', error);
-      // Never leave the cards hidden or locked after an error
-      this.curtain = false;
+      // Never leave old cards shown or locked after an error
+      this.shownChoices = null;
       this.highlight = -1;
       this.applying = false;
     } finally {
@@ -371,24 +374,21 @@ export class LobbyDraft extends DeckDraftRoute {
       }
       const choices = (this.state as UnitPickState).data.choices;
       const live = entry.round === current.round && current.stage === 'units';
-      let curtainSince = 0;
+      const shownSince = Date.now();
+      let frozen = false;
       if (choices.length > 0) {
         // Deck not full yet: take the same position (or the last card if
         // this player has fewer cards left than the picker)
         const slot = Math.min(entry.slot, choices.length - 1);
         this.applying = true;
         if (live) {
-          // 1. the taken card glows, the others fade back
+          // The current cards stay on screen with the taken one highlighted;
+          // everything below happens behind them
+          this.shownChoices = choices.slice();
           this.highlight = slot;
-          await sleep(PICK_GLOW_MS);
-          // 2. everything sinks behind the wz.93 curtain with the emblem
-          this.curtain = true;
-          await sleep(CURTAIN_FADE_MS);
-          curtainSince = Date.now();
+          frozen = true;
         }
-        // 3. behind the curtain: apply the pick and load the new cards
         await this.engineController.chooseOption(slot);
-        this.highlight = -1;
         if (live) {
           await preloadImages(this.choiceImageUrls());
         }
@@ -400,11 +400,14 @@ export class LobbyDraft extends DeckDraftRoute {
         await this.shareDeck();
       }
       await lobby.act('ack', {round: this.appliedRound, done: full});
-      if (curtainSince) {
-        // 4. lift the curtain and slide the new cards in
-        await sleep(Math.max(0, CURTAIN_MIN_MS - (Date.now() - curtainSince)));
-        this.curtain = false;
+      if (frozen) {
+        // Then the new cards replace the shown ones and slide in
+        await sleep(Math.max(0, SHOW_PICK_MS - (Date.now() - shownSince)));
+        this.shownChoices = null;
+        this.highlight = -1;
         this.revealKey += 1;
+      } else {
+        this.highlight = -1;
       }
       this.applying = false;
     }
@@ -740,7 +743,8 @@ export class LobbyDraft extends DeckDraftRoute {
     }
 
     if (this.state.phase === 'UNIT_PICK') {
-      if (this.state.data.choices.length === 0) {
+      const cards = this.shownChoices ?? this.state.data.choices;
+      if (cards.length === 0) {
         return html`${bar}${this.renderComplete()}${this.renderMates(snapshot)}`;
       }
       const mine = this.myTurn(draft);
@@ -767,13 +771,11 @@ export class LobbyDraft extends DeckDraftRoute {
               ></deck-draft-deck-display>`}
           <deck-draft-unit-picker
             class="content"
-            .choices=${this.state.data.choices}
+            .choices=${cards}
             .units=${this.units}
             .deck=${this.activeDeck}
             .round=${draft.round}
             .revealKey=${this.revealKey}
-            .curtain=${this.curtain}
-            .emblemDivision=${this.activeDeck?.division?.descriptor ?? ''}
             .animateOnEnable=${false}
             .highlight=${this.highlight}
             .disable=${!mine}
