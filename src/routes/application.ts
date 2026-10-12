@@ -45,19 +45,6 @@ export class Application extends LitElement {
         filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.7));
       }
 
-      /* Letters about half as tall as the logo (104px): cap height ~0.72em */
-      .brand {
-        margin-left: var(--lumo-space-m);
-        font-family: Arial, 'Helvetica Neue', Helvetica, sans-serif;
-        font-weight: 700;
-        font-size: min(72px, 5.5vw);
-        line-height: 1;
-        letter-spacing: 0.02em;
-        color: hsl(0, 0%, 62%);
-        white-space: nowrap;
-        text-decoration: none;
-      }
-
       main {
         flex: 1 1 auto;
         display: flex;
@@ -73,7 +60,6 @@ export class Application extends LitElement {
       <header>
         <a href="/" title="Strona główna">
           <img src=${AccLogo} alt="ACC.DRAFTER" />
-          <span class="brand">ACC.DRAFTER</span>
         </a>
       </header>
       <main>
