@@ -1,5 +1,5 @@
-# Alpha_ACC.Drafter-by-Kendi
-Wczesna Alfa, projekt draftera skonstruowany przy pomocy AI na potrzeby klanowe
+# Alpha_ACC.Drafter-by-Kendi-Kotel
+Wczesna Alfa, projekt draftera skonstruowany przy pomocy AI na potrzeby klanowe przez członków klanu Arma Coop Corps (Kendi oraz Kotel)
 
 
 # Instalacja
