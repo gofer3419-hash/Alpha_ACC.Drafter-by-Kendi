@@ -17,6 +17,7 @@ import {Dataset, DATASETS} from '../types/dataset';
 import {copyText} from '../utils/export-deck-to-code';
 import {getDlcs, loadOwnedDlc, saveOwnedDlc} from '../utils/owned-dlc';
 import {MAX_PLAYERS_PER_TEAM, shuffleTeams} from '../utils/teams';
+import {drawMap, findMap, formatForTeamSize, mapLabel, MAPS} from '../utils/maps';
 import {applySideTheme} from '../utils/theme';
 
 const MAX_PLAYERS = MAX_PLAYERS_PER_TEAM * 2;
@@ -435,6 +436,16 @@ export class LobbyRoute extends LitElement implements BeforeEnterObserver {
     return this.act('teams', {blue, red});
   }
 
+  /** Host draws the map for the size of the bigger team */
+  private drawLobbyMap() {
+    const perSide = Math.max(this.teamPids('blue').length, this.teamPids('red').length);
+    const format = formatForTeamSize(perSide);
+    const pool = MAPS.filter((m) => m.format === format);
+    const previous = findMap(lobby.snapshot?.map ?? '');
+    const map = drawMap(pool, previous);
+    return this.act('map', {map: map ? mapLabel(map) : ''});
+  }
+
   private swapSides() {
     return this.act('teams', {blue: this.teamPids('red'), red: this.teamPids('blue')});
   }
@@ -718,6 +729,20 @@ export class LobbyRoute extends LitElement implements BeforeEnterObserver {
           : ''}
         ${this.renderDlc(snapshot.dataset)}
         <div class="panel" style="margin-top: var(--lumo-space-m)">
+          <h3>MAPA</h3>
+          <div class="code-big" style="font-size: var(--lumo-font-size-xxl)">
+            ${snapshot.map ?? 'nie wylosowano'}
+          </div>
+          ${host
+            ? html`<vaadin-button
+                ?disabled=${this.busy}
+                @click=${() => this.drawLobbyMap()}
+              >
+                ${snapshot.map ? 'Losuj mapę ponownie' : 'Losuj mapę'}
+              </vaadin-button>`
+            : ''}
+        </div>
+        <div class="panel">
           ${host
             ? html`
                 <div class="hint">
@@ -760,7 +785,7 @@ export class LobbyRoute extends LitElement implements BeforeEnterObserver {
     return html`
       <div class="page wide">
         <div class="draft-head">
-          <span>Lobby ${snapshot.code} · ${lobby.side === 'NATO' ? 'NATO' : 'PAKT'}</span>
+          <span>Lobby ${snapshot.code} · ${lobby.side === 'NATO' ? 'NATO' : 'PAKT'}${snapshot.map ? ` · Mapa: ${snapshot.map}` : ''}</span>
           <vaadin-button theme="tertiary small" @click=${() => this.leave()}>
             Wyjdź z lobby
           </vaadin-button>

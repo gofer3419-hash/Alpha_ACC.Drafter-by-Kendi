@@ -11,6 +11,7 @@ import './iconset.js';
 import './routes/application';
 import './routes/home';
 import './routes/team-shuffle';
+import './routes/map-draw';
 import './routes/deck-drafter';
 import './routes/deck-draft';
 import './routes/lobby';

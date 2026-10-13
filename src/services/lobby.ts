@@ -48,6 +48,8 @@ export interface LobbySnapshot {
   code: string;
   phase: LobbyPhase;
   dataset: Dataset;
+  /** Map drawn by the host, e.g. "Mount River (3v3)" */
+  map?: string | null;
   hostPid: string;
   now: number;
   members: LobbyMember[];
