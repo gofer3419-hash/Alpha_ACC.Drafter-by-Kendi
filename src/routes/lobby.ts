@@ -9,6 +9,7 @@ import {Dlc} from '../services/bundle-manager';
 import {
   lobby,
   LobbyMember,
+  LobbySnapshot,
   NICK_HELP,
   TeamColor,
 } from '../services/lobby';
@@ -17,7 +18,15 @@ import {Dataset, DATASETS} from '../types/dataset';
 import {copyText} from '../utils/export-deck-to-code';
 import {getDlcs, loadOwnedDlc, saveOwnedDlc} from '../utils/owned-dlc';
 import {MAX_PLAYERS_PER_TEAM, shuffleTeams} from '../utils/teams';
-import {drawMap, findMap, formatForTeamSize, mapLabel, MAPS} from '../utils/maps';
+import {
+  categoryLabel,
+  drawMap,
+  findMap,
+  FORMATS,
+  formatForTeamSize,
+  mapLabel,
+  MAPS,
+} from '../utils/maps';
 import {applySideTheme} from '../utils/theme';
 
 const MAX_PLAYERS = MAX_PLAYERS_PER_TEAM * 2;
@@ -436,14 +445,68 @@ export class LobbyRoute extends LitElement implements BeforeEnterObserver {
     return this.act('teams', {blue, red});
   }
 
-  /** Host draws the map for the size of the bigger team */
+  /**
+   * Map category: the host's choice, or (until he chooses) the one that fits
+   * the number of players in the lobby
+   */
+  private mapFormat(): number {
+    const snapshot = lobby.snapshot;
+    if (snapshot?.mapFormat) {
+      return snapshot.mapFormat;
+    }
+    return formatForTeamSize(Math.ceil((snapshot?.members.length ?? 2) / 2));
+  }
+
+  private chooseMapFormat(format: number) {
+    return this.act('map', {format});
+  }
+
+  /** Host draws a map from the chosen category (never the same twice in a row) */
   private drawLobbyMap() {
-    const perSide = Math.max(this.teamPids('blue').length, this.teamPids('red').length);
-    const format = formatForTeamSize(perSide);
+    const format = this.mapFormat();
     const pool = MAPS.filter((m) => m.format === format);
     const previous = findMap(lobby.snapshot?.map ?? '');
     const map = drawMap(pool, previous);
-    return this.act('map', {map: map ? mapLabel(map) : ''});
+    // The category is sent too, so everybody sees what it was drawn from
+    return this.act('map', {format, map: map ? mapLabel(map) : ''});
+  }
+
+  /** Map category and draw: in the waiting room and on the teams screen */
+  private renderMapPanel(snapshot: LobbySnapshot, host: boolean): TemplateResult {
+    const format = this.mapFormat();
+    return html`
+      <div class="panel">
+        <h3>MAPA</h3>
+        ${host
+          ? html`
+              <div class="hint">Na ile graczy ma być mapa?</div>
+              <div class="actions" style="margin-top: var(--lumo-space-xs)">
+                ${FORMATS.map(
+                  (f) => html`<vaadin-button
+                    theme=${f === format ? 'primary' : ''}
+                    ?disabled=${this.busy}
+                    @click=${() => this.chooseMapFormat(f)}
+                  >
+                    ${categoryLabel(f)}
+                  </vaadin-button>`
+                )}
+              </div>
+            `
+          : html`<div class="hint">Kategoria: ${categoryLabel(format)}</div>`}
+        <div class="code-big" style="font-size: var(--lumo-font-size-xxl)">
+          ${snapshot.map ?? 'nie wylosowano'}
+        </div>
+        ${host
+          ? html`<vaadin-button
+              theme="primary"
+              ?disabled=${this.busy}
+              @click=${() => this.drawLobbyMap()}
+            >
+              ${snapshot.map ? 'Losuj mapę ponownie' : 'Losuj mapę'}
+            </vaadin-button>`
+          : ''}
+      </div>
+    `;
   }
 
   private swapSides() {
@@ -642,6 +705,7 @@ export class LobbyRoute extends LitElement implements BeforeEnterObserver {
             : html`<div>${DATASETS[snapshot.dataset].title}</div>`}
         </div>
         ${this.renderDlc(snapshot.dataset)}
+        ${this.renderMapPanel(snapshot, host)}
         <div class="panel">
           ${host
             ? html`
@@ -728,20 +792,8 @@ export class LobbyRoute extends LitElement implements BeforeEnterObserver {
             </div>`
           : ''}
         ${this.renderDlc(snapshot.dataset)}
-        <div class="panel" style="margin-top: var(--lumo-space-m)">
-          <h3>MAPA</h3>
-          <div class="code-big" style="font-size: var(--lumo-font-size-xxl)">
-            ${snapshot.map ?? 'nie wylosowano'}
-          </div>
-          ${host
-            ? html`<vaadin-button
-                ?disabled=${this.busy}
-                @click=${() => this.drawLobbyMap()}
-              >
-                ${snapshot.map ? 'Losuj mapę ponownie' : 'Losuj mapę'}
-              </vaadin-button>`
-            : ''}
-        </div>
+        <div style="margin-top: var(--lumo-space-m)"></div>
+        ${this.renderMapPanel(snapshot, host)}
         <div class="panel">
           ${host
             ? html`

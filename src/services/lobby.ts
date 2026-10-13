@@ -50,6 +50,8 @@ export interface LobbySnapshot {
   dataset: Dataset;
   /** Map drawn by the host, e.g. "Mount River (3v3)" */
   map?: string | null;
+  /** Category chosen by the host: players per side (1 = 1v1 ... 4 = 4v4) */
+  mapFormat?: number | null;
   hostPid: string;
   now: number;
   members: LobbyMember[];

@@ -118,6 +118,7 @@ function snapshot(lobby, viewerCid) {
     phase: lobby.phase,
     dataset: lobby.dataset,
     map: lobby.map || null,
+    mapFormat: lobby.mapFormat || null,
     hostPid: lobby.members.get(lobby.hostCid)?.pid ?? '',
     now: Date.now(),
     members: [...lobby.members.entries()]
@@ -421,9 +422,16 @@ const actions = {
     const cid = checkCid(body.cid);
     const lobby = lobbyFor(cid);
     requireHost(lobby, cid);
-    const label = clip(body.map, 60);
-    lobby.map = label || null;
-    appendLog({type: 'map', lobby: lobby.code, map: lobby.map});
+    // Category (players per side, 1-4) and/or the drawn map; either may be sent
+    if (body.format !== undefined) {
+      const format = Number(body.format);
+      lobby.mapFormat = Number.isInteger(format) && format >= 1 && format <= 4 ? format : null;
+      lobby.map = null; // another category: the old draw no longer fits
+    }
+    if (body.map !== undefined) {
+      lobby.map = clip(body.map, 60) || null;
+    }
+    appendLog({type: 'map', lobby: lobby.code, format: lobby.mapFormat, map: lobby.map});
     return {lobby, reply: {ok: true}};
   },
 

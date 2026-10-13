@@ -23,9 +23,10 @@ a po powrocie do menu wraca bordowa. Kolor wybiera jedna zmienna `--acc-h`.
 Na stronie głównej: **Losowanie mapy** (`/maps`). Wybierasz kategorię jak w menu gry
 (2 graczy = 1v1, 4 = 2v2, 6 = 3v3, 8 = 4v4; można kilka naraz albo wszystkie), odznaczasz mapy, których nie chcesz, i
 losujesz. Ta sama mapa nie wypada dwa razy pod rząd. Ustawienia zostają w
-przeglądarce. W lobby host losuje mapę na ekranie drużyn (kategoria zależy od
-liczebności większej drużyny, 5 na stronę dostaje mapy 8P), a wynik widzą
-wszyscy. Lista map jest w `src/utils/maps.ts`: tam się je dodaje i poprawia.
+przeglądarce. W lobby host wybiera kategorię mapy (1v1, 2v2, 3v3 albo 4v4) i losuje mapę
+zaraz po założeniu lobby, w poczekalni i na ekranie drużyn, jeszcze przed
+startem draftu. Domyślnie kategoria pasuje do liczby graczy. Wybór i wynik
+widzą wszyscy. Lista map jest w `src/utils/maps.ts`: tam się je dodaje i poprawia.
 
 ## Lobby: draft drużynowy
 
