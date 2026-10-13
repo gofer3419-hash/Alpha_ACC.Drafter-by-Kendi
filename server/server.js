@@ -13,7 +13,7 @@
  *   POST /api/lobby/join   {cid, nick, code}
  *   POST /api/lobby/leave  {cid}
  *   POST /api/lobby/<action> {cid, ...}
- *        dataset teams back start kick takehost ready pick ack skip share
+ *        dataset teams back start kick takehost ready pick ack skip share map
  *   GET  /api/lobby/events?cid=...   live stream (Server-Sent Events)
  *   GET  /api/log                    last 300 events
  *
@@ -117,6 +117,7 @@ function snapshot(lobby, viewerCid) {
     code: lobby.code,
     phase: lobby.phase,
     dataset: lobby.dataset,
+    map: lobby.map || null,
     hostPid: lobby.members.get(lobby.hostCid)?.pid ?? '',
     now: Date.now(),
     members: [...lobby.members.entries()]
@@ -412,6 +413,17 @@ const actions = {
     for (const m of lobby.members.values()) m.team = blue.includes(m.pid) ? 'blue' : 'red';
     lobby.phase = 'teams';
     appendLog({type: 'teams', lobby: lobby.code, blue: blue.length, red: red.length});
+    return {lobby, reply: {ok: true}};
+  },
+
+  /** Host's map draw (the list of maps lives in the browser): shown to all */
+  map(body) {
+    const cid = checkCid(body.cid);
+    const lobby = lobbyFor(cid);
+    requireHost(lobby, cid);
+    const label = clip(body.map, 60);
+    lobby.map = label || null;
+    appendLog({type: 'map', lobby: lobby.code, map: lobby.map});
     return {lobby, reply: {ok: true}};
   },
 

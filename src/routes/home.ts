@@ -88,6 +88,7 @@ export class HomeRoute extends LitElement {
       <nav>
         <a href="/lobby">Lobby: draft drużynowy</a>
         <a href="/teams">Losowanie drużyn</a>
+        <a href="/maps">Losowanie mapy</a>
         <a href="/drafter/wif">WiF Deck Drafter</a>
         <a href="/drafter/vanilla">VANILLA Deck Drafter</a>
         <button

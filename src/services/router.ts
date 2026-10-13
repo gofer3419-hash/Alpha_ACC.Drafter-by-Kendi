@@ -5,6 +5,7 @@ const router = new Router(document.getElementById('main'));
 const routes: Route[] = [
   {path: '/', component: 'home-route'},
   {path: '/teams', component: 'team-shuffle-route'},
+  {path: '/maps', component: 'map-draw-route'},
   {path: '/lobby', component: 'lobby-route'},
   // :dataset is "wif" or "vanilla" (see types/dataset.ts)
   {path: '/drafter/:dataset', component: 'deck-drafter-route'},
