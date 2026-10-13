@@ -784,21 +784,23 @@ export class LobbyDraft extends DeckDraftRoute {
     const picked = (draft.divPicked ?? []).includes(lobby.pid);
     const missing = order.filter((p) => !(draft.divPicked ?? []).includes(p));
     const assigned = draft.divAssigned?.[lobby.pid] !== undefined;
+    const count = `${(draft.divPicked ?? []).length}/${order.length}`;
 
     let body: TemplateResult;
     if (picked) {
       body = html`<p>
         Wybrałeś kartę dla <b>${this.nick(snapshot, next)}</b>.
         ${assigned
-          ? 'Twoja dywizja jest właśnie losowana.'
-          : 'Czekasz, aż ktoś wybierze kartę dla Ciebie.'}
+          ? 'Wszyscy wybrali, Twoja dywizja jest właśnie losowana.'
+          : `Czekasz, aż wszyscy wybiorą (${count}). Dywizje poznacie razem.`}
       </p>`;
     } else {
       body = html`
         <p>
           Wybierz kartę dla gracza <b>${this.nick(snapshot, next)}</b>.
           Nie wiesz, jaką dywizję ma pod nią: to losowe, a Twoją dywizję
-          wybierze ktoś inny.
+          wybierze ktoś inny. Dywizje poznacie dopiero, gdy wszyscy wybiorą
+          (${count}).
         </p>
         <div class="blind-cards">
           ${SLOT_NAMES.map(

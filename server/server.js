@@ -155,10 +155,15 @@ function snapshot(lobby, viewerCid) {
  * player in the queue, and the last one picks for the first. Only positions
  * are known here; each browser applies the position to its own private
  * division cards. Returns pid -> position that was chosen FOR that player.
+ *
+ * Nothing is handed out until EVERYBODY has picked: otherwise a player whose
+ * division was already chosen would move on to building his deck and could
+ * not pick for the next one.
  */
 function divAssignments(d) {
   const out = {};
   const n = d.order.length;
+  if (!d.order.every((pid) => d.divPicks.has(pid))) return out;
   d.order.forEach((pid, i) => {
     const chooser = d.order[(i - 1 + n) % n];
     if (d.divPicks.has(chooser)) out[pid] = d.divPicks.get(chooser);
