@@ -471,7 +471,42 @@ export class LobbyRoute extends LitElement implements BeforeEnterObserver {
     return this.act('map', {format, map: map ? mapLabel(map) : ''});
   }
 
-  /** Map category and draw: in the waiting room and on the teams screen */
+  /** Host chooses how divisions are picked (own choice or blind, mutual) */
+  private renderDivModePanel(snapshot: LobbySnapshot, host: boolean): TemplateResult {
+    const blind = snapshot.divMode === 'blind';
+    return html`
+      <div class="panel">
+        <h3>WYBÓR DYWIZJI</h3>
+        ${host
+          ? html`
+              <div class="actions" style="margin-top: 0">
+                <vaadin-button
+                  theme=${blind ? '' : 'primary'}
+                  ?disabled=${this.busy}
+                  @click=${() => this.act('divmode', {mode: 'self'})}
+                >
+                  Każdy wybiera sam
+                </vaadin-button>
+                <vaadin-button
+                  theme=${blind ? 'primary' : ''}
+                  ?disabled=${this.busy}
+                  @click=${() => this.act('divmode', {mode: 'blind'})}
+                >
+                  Nawzajem, w ciemno
+                </vaadin-button>
+              </div>
+            `
+          : html`<div>${blind ? 'Nawzajem, w ciemno' : 'Każdy wybiera sam'}</div>`}
+        <div class="hint" style="margin-top: var(--lumo-space-xs)">
+          ${blind
+            ? 'Gracz 1 wybiera kartę dla gracza 2, 2 dla 3 i tak dalej, a ostatni dla pierwszego (kolejność losuje serwer). Każdy dostaje 3 losowe dywizje, ale nikt ich nie widzi: wybiera się tylko pozycję karty.'
+            : 'Każdy gracz dostaje 3 losowe dywizje i sam wybiera jedną. Nikt nie widzi cudzych.'}
+        </div>
+      </div>
+    `;
+  }
+
+  /** Map category and draw: shown to the lobby when the draft is finished */
   private renderMapPanel(snapshot: LobbySnapshot, host: boolean): TemplateResult {
     const format = this.mapFormat();
     return html`
@@ -705,7 +740,7 @@ export class LobbyRoute extends LitElement implements BeforeEnterObserver {
             : html`<div>${DATASETS[snapshot.dataset].title}</div>`}
         </div>
         ${this.renderDlc(snapshot.dataset)}
-        ${this.renderMapPanel(snapshot, host)}
+        ${this.renderDivModePanel(snapshot, host)}
         <div class="panel">
           ${host
             ? html`
@@ -793,7 +828,7 @@ export class LobbyRoute extends LitElement implements BeforeEnterObserver {
           : ''}
         ${this.renderDlc(snapshot.dataset)}
         <div style="margin-top: var(--lumo-space-m)"></div>
-        ${this.renderMapPanel(snapshot, host)}
+        ${this.renderDivModePanel(snapshot, host)}
         <div class="panel">
           ${host
             ? html`
@@ -842,6 +877,11 @@ export class LobbyRoute extends LitElement implements BeforeEnterObserver {
             Wyjdź z lobby
           </vaadin-button>
         </div>
+        ${snapshot.phase === 'finished'
+          ? html`<div class="page" style="padding-bottom: 0">
+              ${this.renderMapPanel(snapshot, lobby.isHost)}
+            </div>`
+          : ''}
         <lobby-draft></lobby-draft>
       </div>
     `;

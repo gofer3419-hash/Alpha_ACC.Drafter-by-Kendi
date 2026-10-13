@@ -200,6 +200,68 @@ export class LobbyDraft extends DeckDraftRoute {
           cursor: default;
         }
 
+        .blind {
+          box-sizing: border-box;
+          margin: var(--lumo-space-m);
+          padding: var(--lumo-space-l);
+          text-align: center;
+          background-color: hsla(0, 0%, 11%, 0.92);
+          border: 1px solid var(--lumo-contrast-20pct);
+          border-top: 3px solid var(--acc-burgundy);
+        }
+
+        .blind h3 {
+          margin: 0 0 var(--lumo-space-s);
+          letter-spacing: 0.12em;
+          color: var(--lumo-secondary-color);
+        }
+
+        .blind-cards {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          gap: var(--lumo-space-m);
+          margin: var(--lumo-space-l) 0;
+        }
+
+        .blind-card {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: var(--lumo-space-s);
+          width: 11rem;
+          height: 15rem;
+          font: inherit;
+          font-weight: 700;
+          letter-spacing: 0.1em;
+          color: var(--lumo-body-text-color);
+          background-color: var(--lumo-contrast-5pct);
+          background-image: repeating-linear-gradient(
+            45deg,
+            transparent 0 10px,
+            var(--lumo-contrast-5pct) 10px 20px
+          );
+          border: 2px solid var(--lumo-contrast-30pct);
+          cursor: pointer;
+        }
+
+        .blind-card:hover:not([disabled]) {
+          border-color: var(--lumo-primary-color);
+          box-shadow: 0 0 22px var(--acc-burgundy-glow);
+          transform: translateY(-4px);
+        }
+
+        .blind-card[disabled] {
+          opacity: 0.5;
+          cursor: default;
+        }
+
+        .blind-card .mark {
+          font-size: var(--lumo-font-size-xxxl, 2.5rem);
+          color: var(--lumo-secondary-color);
+        }
+
         .private-note {
           margin-top: var(--lumo-space-s);
           font-size: var(--lumo-font-size-s);
@@ -240,6 +302,7 @@ export class LobbyDraft extends DeckDraftRoute {
   private syncing = false;
   private again = false;
   private ready = false;
+  private applyingDivision = false;
   /** Deck code last sent to the server (so it is sent once per deck) */
   private sharedCode = '';
   private mateDecks = new Map<string, Deck | null>();
@@ -354,6 +417,23 @@ export class LobbyDraft extends DeckDraftRoute {
     const state = this.state;
     const snapshot = lobby.snapshot;
     const draft = snapshot?.draft;
+
+    // Blind division mode: the previous player picked a position, this
+    // browser takes that position from its own private division cards
+    if (state?.phase === 'DIVISION_PICK' && draft?.blind) {
+      const slot = draft.divAssigned?.[lobby.pid];
+      if (slot !== undefined && !this.applyingDivision) {
+        this.applyingDivision = true;
+        try {
+          await this.engineController.chooseOption(slot);
+        } finally {
+          this.applyingDivision = false;
+        }
+        this.again = true;
+      }
+      return;
+    }
+
     if (!state || !snapshot || !draft || state.phase !== 'UNIT_PICK') {
       return;
     }
@@ -539,7 +619,12 @@ export class LobbyDraft extends DeckDraftRoute {
     let title: string;
     let note = '';
 
-    if (draft.stage === 'division') {
+    if (draft.stage === 'division' && draft.blind) {
+      title = draft.ready.includes(lobby.pid)
+        ? 'CZEKASZ NA POZOSTAŁYCH GRACZY'
+        : 'LOSOWANIE DYWIZJI';
+      note = `Gotowych: ${draft.ready.length}/${snapshot.members.length}. Każdy wybiera pozycję karty dla następnego gracza, nikt nie zna niczyich dywizji.`;
+    } else if (draft.stage === 'division') {
       title = draft.ready.includes(lobby.pid)
         ? 'CZEKASZ NA POZOSTAŁYCH GRACZY'
         : 'WYBIERZ DYWIZJĘ';
@@ -686,6 +771,77 @@ export class LobbyDraft extends DeckDraftRoute {
     });
   }
 
+  /**
+   * Blind division mode. The player sees three face-down cards and picks one
+   * position for the NEXT player in the queue (the last picks for the first).
+   * Nobody sees any division; the position is applied to the receiver's own
+   * private cards.
+   */
+  private renderBlindDivision(snapshot: LobbySnapshot, draft: DraftView): TemplateResult {
+    const order = draft.order;
+    const index = order.indexOf(lobby.pid);
+    const next = order.length > 0 ? order[(index + 1) % order.length] : null;
+    const picked = (draft.divPicked ?? []).includes(lobby.pid);
+    const missing = order.filter((p) => !(draft.divPicked ?? []).includes(p));
+    const assigned = draft.divAssigned?.[lobby.pid] !== undefined;
+
+    let body: TemplateResult;
+    if (picked) {
+      body = html`<p>
+        Wybrałeś kartę dla <b>${this.nick(snapshot, next)}</b>.
+        ${assigned
+          ? 'Twoja dywizja jest właśnie losowana.'
+          : 'Czekasz, aż ktoś wybierze kartę dla Ciebie.'}
+      </p>`;
+    } else {
+      body = html`
+        <p>
+          Wybierz kartę dla gracza <b>${this.nick(snapshot, next)}</b>.
+          Nie wiesz, jaką dywizję ma pod nią: to losowe, a Twoją dywizję
+          wybierze ktoś inny.
+        </p>
+        <div class="blind-cards">
+          ${SLOT_NAMES.map(
+            (name, slot) => html`<button
+              class="blind-card"
+              ?disabled=${this.disableButtons}
+              @click=${() => this.onBlindPick(slot)}
+            >
+              <span class="mark">?</span>${name}
+            </button>`
+          )}
+        </div>
+      `;
+    }
+    return html`
+      <div class="blind">
+        <h3>WYBÓR DYWIZJI NAWZAJEM</h3>
+        ${body}
+        ${lobby.isHost && missing.length > 0
+          ? html`<vaadin-button
+              theme="tertiary small"
+              @click=${() => lobby.act('divrandom')}
+            >
+              Wylosuj za graczy, którzy jeszcze nie wybrali (np. offline)
+            </vaadin-button>`
+          : ''}
+      </div>
+    `;
+  }
+
+  private async onBlindPick(slot: number) {
+    this.disableButtons = true;
+    const error = await lobby.act('divpick', {slot});
+    this.disableButtons = false;
+    if (error) {
+      notificationService.instance?.addNotification({
+        content: error,
+        duration: 4000,
+        theme: 'error',
+      });
+    }
+  }
+
   private renderComplete(): TemplateResult {
     return html`
       <div class="content complete">
@@ -733,6 +889,10 @@ export class LobbyDraft extends DeckDraftRoute {
       return html`<p class="loading">Przygotowuję draft…</p>`;
     }
     const bar = this.renderTurnBar(snapshot, draft);
+
+    if (this.state.phase === 'DIVISION_PICK' && draft.blind) {
+      return html`${bar}${this.renderBlindDivision(snapshot, draft)}`;
+    }
 
     if (this.state.phase === 'DIVISION_PICK') {
       return html`

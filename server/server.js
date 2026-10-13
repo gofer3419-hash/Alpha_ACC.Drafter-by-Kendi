@@ -13,7 +13,7 @@
  *   POST /api/lobby/join   {cid, nick, code}
  *   POST /api/lobby/leave  {cid}
  *   POST /api/lobby/<action> {cid, ...}
- *        dataset teams back start kick takehost ready pick ack skip share map
+ *        dataset teams back start kick takehost ready pick ack skip share map divmode divpick divrandom
  *   GET  /api/lobby/events?cid=...   live stream (Server-Sent Events)
  *   GET  /api/log                    last 300 events
  *
@@ -119,6 +119,7 @@ function snapshot(lobby, viewerCid) {
     dataset: lobby.dataset,
     map: lobby.map || null,
     mapFormat: lobby.mapFormat || null,
+    divMode: lobby.divMode || 'self',
     hostPid: lobby.members.get(lobby.hostCid)?.pid ?? '',
     now: Date.now(),
     members: [...lobby.members.entries()]
@@ -141,9 +142,28 @@ function snapshot(lobby, viewerCid) {
           ready: [...d.ready],
           done: [...d.done],
           applied: Object.fromEntries(d.applied),
+          blind: !!d.blind,
+          divPicked: [...d.divPicks.keys()],
+          divAssigned: divAssignments(d),
         }
       : null,
   };
+}
+
+/**
+ * Blind division mode: every player picks a card POSITION (0-2) for the next
+ * player in the queue, and the last one picks for the first. Only positions
+ * are known here; each browser applies the position to its own private
+ * division cards. Returns pid -> position that was chosen FOR that player.
+ */
+function divAssignments(d) {
+  const out = {};
+  const n = d.order.length;
+  d.order.forEach((pid, i) => {
+    const chooser = d.order[(i - 1 + n) % n];
+    if (d.divPicks.has(chooser)) out[pid] = d.divPicks.get(chooser);
+  });
+  return out;
 }
 
 function broadcast(lobby) {
@@ -291,6 +311,7 @@ function removeMember(lobby, cid, reason) {
     d.ready.delete(member.pid);
     d.done.delete(member.pid);
     d.applied.delete(member.pid);
+    d.divPicks?.delete(member.pid);
     if (d.current === member.pid) d.current = null;
   }
   appendLog({type: reason, lobby: lobby.code, nick: member.nick});
@@ -460,6 +481,8 @@ const actions = {
       ready: new Set(),
       done: new Set(),
       applied: new Map(),
+      blind: lobby.divMode === 'blind',
+      divPicks: new Map(),
     };
     lobby.phase = 'drafting';
     appendLog({type: 'start', lobby: lobby.code, order: lobby.draft.order});
@@ -491,6 +514,50 @@ const actions = {
     }
     lobby.hostCid = cid;
     appendLog({type: 'takehost', lobby: lobby.code, nick: lobby.members.get(cid).nick});
+    return {lobby, reply: {ok: true}};
+  },
+
+  /** Host chooses how divisions are picked: 'self' (own choice) or 'blind' */
+  divmode(body) {
+    const cid = checkCid(body.cid);
+    const lobby = lobbyFor(cid);
+    requireHost(lobby, cid);
+    if (lobby.phase !== 'waiting' && lobby.phase !== 'teams') {
+      throw new Fail('Zbyt późno na zmianę trybu wyboru dywizji.');
+    }
+    lobby.divMode = body.mode === 'blind' ? 'blind' : 'self';
+    return {lobby, reply: {ok: true}};
+  },
+
+  /** Blind mode: a player picks a card position for the next player */
+  divpick(body) {
+    const cid = checkCid(body.cid);
+    const lobby = lobbyFor(cid);
+    const d = lobby.draft;
+    if (!d || !d.blind || d.stage !== 'division') {
+      throw new Fail('Teraz nie wybiera się dywizji dla innych.');
+    }
+    const pid = pidOf(lobby, cid);
+    if (d.divPicks.has(pid)) throw new Fail('Już wybrano.');
+    const slot = Number(body.slot);
+    if (!Number.isInteger(slot) || slot < 0 || slot > 2) throw new Fail('Zła pozycja karty.');
+    d.divPicks.set(pid, slot);
+    // Only the position is logged, never the division behind it
+    appendLog({type: 'divpick', lobby: lobby.code, nick: lobby.members.get(cid).nick, slot});
+    return {lobby, reply: {ok: true}};
+  },
+
+  /** Host: draw the position for players who have not picked (e.g. offline) */
+  divrandom(body) {
+    const cid = checkCid(body.cid);
+    const lobby = lobbyFor(cid);
+    requireHost(lobby, cid);
+    const d = lobby.draft;
+    if (!d || !d.blind || d.stage !== 'division') throw new Fail('Teraz nie można losować.');
+    for (const pid of d.order) {
+      if (!d.divPicks.has(pid)) d.divPicks.set(pid, randomInt(3));
+    }
+    appendLog({type: 'divrandom', lobby: lobby.code});
     return {lobby, reply: {ok: true}};
   },
 

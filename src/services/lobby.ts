@@ -42,6 +42,12 @@ export interface DraftView {
   done: string[];
   /** pid -> last round applied by that player */
   applied: Record<string, number>;
+  /** Blind division mode: each player picks a position for the next one */
+  blind?: boolean;
+  /** pids that already picked a position for their successor */
+  divPicked?: string[];
+  /** pid -> position (0-2) that was picked FOR that player */
+  divAssigned?: Record<string, number>;
 }
 
 export interface LobbySnapshot {
@@ -52,6 +58,8 @@ export interface LobbySnapshot {
   map?: string | null;
   /** Category chosen by the host: players per side (1 = 1v1 ... 4 = 4v4) */
   mapFormat?: number | null;
+  /** How divisions are picked: own choice, or blind (picked by the previous player) */
+  divMode?: 'self' | 'blind';
   hostPid: string;
   now: number;
   members: LobbyMember[];
