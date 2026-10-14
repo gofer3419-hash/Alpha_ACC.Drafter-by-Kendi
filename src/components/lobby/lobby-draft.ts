@@ -39,6 +39,10 @@ const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
  * cards are drawn and their images loaded meanwhile, behind the shown ones.
  */
 const SHOW_PICK_MS = 2500;
+/** Blind division reveal: the cards slide in, then the chosen one is lit */
+const DIV_SHOW_MS = 1700;
+/** How long the lit division stays on screen before the draft goes on */
+const DIV_HOLD_MS = 2500;
 /** Do not wait longer than this for the images of the new cards */
 const PRELOAD_MAX_MS = 2500;
 
@@ -295,6 +299,13 @@ export class LobbyDraft extends DeckDraftRoute {
   @state()
   private loadError = '';
 
+  /**
+   * Blind division reveal: -1 = not revealing, -2 = the three division cards
+   * are shown, 0-2 = the card chosen for this player is lit, the rest greyed
+   */
+  @state()
+  private divReveal = -1;
+
   /** Round in which this player already sent his pick (waiting for the server) */
   private sentAtRound = -1;
   private appliedRound = 0;
@@ -425,9 +436,16 @@ export class LobbyDraft extends DeckDraftRoute {
       if (slot !== undefined && !this.applyingDivision) {
         this.applyingDivision = true;
         try {
+          // Uncover the three divisions, light the chosen one, hold it a
+          // moment, and only then continue with the unit rounds
+          this.divReveal = -2;
+          await sleep(DIV_SHOW_MS);
+          this.divReveal = Math.min(slot, state.data.choices.length - 1);
+          await sleep(DIV_HOLD_MS);
           await this.engineController.chooseOption(slot);
         } finally {
           this.applyingDivision = false;
+          this.divReveal = -1;
         }
         this.again = true;
       }
@@ -619,7 +637,14 @@ export class LobbyDraft extends DeckDraftRoute {
     let title: string;
     let note = '';
 
-    if (draft.stage === 'division' && draft.blind) {
+    if (
+      draft.stage === 'division' &&
+      draft.blind &&
+      draft.divAssigned?.[lobby.pid] !== undefined
+    ) {
+      title = 'ODSŁANIAMY DYWIZJE';
+      note = 'Wszyscy wybrali. Zobacz, którą dywizję wybrano dla Ciebie i jakie były pozostałe.';
+    } else if (draft.stage === 'division' && draft.blind) {
       title = draft.ready.includes(lobby.pid)
         ? 'CZEKASZ NA POZOSTAŁYCH GRACZY'
         : 'LOSOWANIE DYWIZJI';
@@ -893,6 +918,19 @@ export class LobbyDraft extends DeckDraftRoute {
     const bar = this.renderTurnBar(snapshot, draft);
 
     if (this.state.phase === 'DIVISION_PICK' && draft.blind) {
+      if (this.divReveal !== -1) {
+        return html`
+          ${bar}
+          <deck-draft-division-picker
+            class="content"
+            heading="TWOJA DYWIZJA"
+            .choices=${this.state.data.choices}
+            .divisions=${this.divisions}
+            .highlight=${this.divReveal}
+            .disable=${true}
+          ></deck-draft-division-picker>
+        `;
+      }
       return html`${bar}${this.renderBlindDivision(snapshot, draft)}`;
     }
 

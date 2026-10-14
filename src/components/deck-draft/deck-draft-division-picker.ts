@@ -78,6 +78,41 @@ export class DeckDraftDivisionPicker extends LitElement {
         box-shadow: 0 0 18px var(--acc-burgundy-glow);
       }
 
+      /* Reveal (blind mode): the division chosen for the player is lit, the
+         other two stay visible but greyed out. Filter instead of opacity,
+         because the entry animation sets opacity inline. */
+      .division.picked {
+        position: relative;
+        border-color: var(--lumo-primary-text-color);
+        box-shadow: 0 0 2rem var(--acc-burgundy-glow);
+        /* Individual properties: anime.js writes the inline transform of the
+           cards, which would cancel a transform set here */
+        translate: 0 -0.25rem;
+        scale: 1.03;
+        z-index: 1;
+      }
+
+      .division.dimmed {
+        filter: grayscale(1) brightness(0.55);
+      }
+
+      .division.picked,
+      .division.dimmed {
+        transition: filter 0.6s ease, translate 0.6s ease, scale 0.6s ease,
+          border-color 0.6s ease,
+          box-shadow 0.6s ease;
+      }
+
+      .picked-badge {
+        align-self: center;
+        margin-top: var(--lumo-space-s);
+        padding: var(--lumo-space-xs) var(--lumo-space-m);
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        color: var(--lumo-primary-contrast-color);
+        background-color: var(--lumo-primary-color);
+      }
+
       .division vaadin-button {
         flex: none;
         margin-top: var(--lumo-space-s);
@@ -144,6 +179,14 @@ export class DeckDraftDivisionPicker extends LitElement {
   @property()
   disable = false;
 
+  /** Reveal: index (0-2) of the division that was chosen, -1 for none */
+  @property({type: Number})
+  highlight = -1;
+
+  /** Heading above the cards */
+  @property()
+  heading = 'WYBIERZ DYWIZJĘ';
+
   chooseDivision(choice: number) {
     this.disable = true;
 
@@ -204,7 +247,7 @@ export class DeckDraftDivisionPicker extends LitElement {
   render(): TemplateResult {
     return html`
       <div class="instruction">
-        <h2>WYBIERZ DYWIZJĘ</h2>
+        <h2>${this.heading}</h2>
       </div>
       <audio id="sound">
         <source src="/draw.wav" type="audio/wav" />
@@ -229,11 +272,20 @@ export class DeckDraftDivisionPicker extends LitElement {
     );
 
     return html`
-      <div class="division division-${index + 1}">
+      <div
+        class="division division-${index + 1} ${this.highlight === index
+          ? 'picked'
+          : ''} ${this.highlight >= 0 && this.highlight !== index
+          ? 'dimmed'
+          : ''}"
+      >
         <div class="deck-draft-card">
           <division-flag .division=${division}></division-flag>
           <h2>${division?.name}</h2>
         </div>
+        ${this.highlight === index
+          ? html`<div class="picked-badge">TWOJA DYWIZJA</div>`
+          : ''}
 
         ${this.disable
           ? html``

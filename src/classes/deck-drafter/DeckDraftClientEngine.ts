@@ -384,11 +384,53 @@ export class DeckDraftClientEngine implements DeckDraftEngine {
         return [];
       }
 
+      // Required supply vehicle, like the command unit on the first pick: until
+      // the deck has one, only supply vehicles are offered (as long as the
+      // logistics tab still has a slot and a supply vehicle is left to take).
+      if (
+        categoriesAvailable.includes(UnitCategory.LOG) &&
+        !DeckDraftClientEngine.deckHasSupplyVehicle(
+          deck,
+          allUnitsMappedByDescriptor
+        )
+      ) {
+        const supplyConfigs = packConfigsWithAvailability.filter((packConfig) =>
+          DeckDraftClientEngine.isSupplyVehicle(
+            allUnitsMappedByDescriptor[packConfig.unit]
+          )
+        );
+        if (supplyConfigs.length > 0) {
+          return this.generateUnitChoices(supplyConfigs, activeDivision);
+        }
+      }
+
       return this.generateUnitChoices(
         packConfigsWithAvailability,
         activeDivision
       );
     }
+  }
+
+  /** Ground supply vehicle of the logistics tab (not a CMD unit, not a helicopter) */
+  static isSupplyVehicle(unit?: Unit): boolean {
+    return (
+      !!unit &&
+      !unit.isCommand &&
+      unit.factoryDescriptor === UnitCategory.LOG &&
+      (unit.infoPanelType as string) === 'supply-vehicle'
+    );
+  }
+
+  static deckHasSupplyVehicle(
+    deck: Deck,
+    unitsByDescriptor: {[key: string]: Unit}
+  ): boolean {
+    return deck.unitsInDeckGroupedUnitsByCategory[UnitCategory.LOG].some(
+      (deckUnit) =>
+        DeckDraftClientEngine.isSupplyVehicle(
+          unitsByDescriptor[deckUnit.pack.unitDescriptor]
+        )
+    );
   }
 
   generateUnitChoices(

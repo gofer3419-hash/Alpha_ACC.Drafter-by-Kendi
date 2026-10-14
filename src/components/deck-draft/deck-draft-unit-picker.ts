@@ -4,6 +4,7 @@ import {playSound} from '../../utils/sound';
 import {Deck} from '../../classes/deck';
 import {PackChoice} from '../../routes/deck-draft';
 import {Unit} from '../../types/unit';
+import {UnitCategory} from '../../types/deck-builder';
 import './deck-draft-button';
 import './deck-draft-unit-select-card';
 import anime from 'animejs/lib/anime.es.js';
@@ -285,7 +286,7 @@ export class DeckDraftUnitPicker extends LitElement {
 
   render(): TemplateResult {
     return html`
-      <div class="instruction"><h2>WYBIERZ JEDNOSTKĘ</h2></div>
+      <div class="instruction"><h2>${this.heading()}</h2></div>
 
       <audio id="sound">
         <source src="/draw.wav" type="audio/wav" />
@@ -297,6 +298,29 @@ export class DeckDraftUnitPicker extends LitElement {
         )}
       </div>
     `;
+  }
+
+  /**
+   * The draft offers only supply vehicles until the deck has one (required,
+   * like the command unit), so say so.
+   */
+  private heading(): string {
+    const isSupply = (descriptor: string) => {
+      const unit = this.units.find((u) => u.descriptorName === descriptor);
+      return (
+        !!unit &&
+        !unit.isCommand &&
+        (unit.infoPanelType as string) === 'supply-vehicle'
+      );
+    };
+    const offersOnlySupply =
+      this.choices.length > 0 && this.choices.every((c) => isSupply(c.unit));
+    const hasSupply = (this.deck?.unitsInDeckGroupedUnitsByCategory[UnitCategory.LOG] ?? []).some(
+      (deckUnit) => isSupply(deckUnit.pack.unitDescriptor)
+    );
+    return offersOnlySupply && !hasSupply
+      ? 'WYBIERZ POJAZD SUPPLY (WYMAGANY)'
+      : 'WYBIERZ JEDNOSTKĘ';
   }
 
   renderUnitButton(choice: PackChoice, index: number) {
